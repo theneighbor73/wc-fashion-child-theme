@@ -12,6 +12,8 @@
   var api = wp.customize;
   const initialConfigs = customPrintShopConfig?.[0] || {};
 
+  console.log("Custom Print Shop Config:", customPrintShopConfig?.[0]);
+
   console.log("Initial Configs:", initialConfigs);
 
   function getLogoConfigByKey(key) {
