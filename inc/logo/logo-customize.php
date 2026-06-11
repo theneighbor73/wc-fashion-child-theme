@@ -10,37 +10,73 @@
  * @todo Preserve `logo_width` as a presentation control, but do not use it to override ratio enforcement.
  */
 
+// function custom_print_shop_get_logo_ratios()
+// {
+//     return [
+//         20 => [
+//             'label'  => '2:1',
+//             'width'  => 200,
+//             'height' => 100,
+//             'css'    => '2 : 1',
+//         ],
+
+//         30 => [
+//             'label'  => '3:1',
+//             'width'  => 300,
+//             'height' => 100,
+//             'css'    => '3 : 1',
+//         ],
+
+//         40 => [
+//             'label'  => '4:1',
+//             'width'  => 400,
+//             'height' => 100,
+//             'css'    => '4 : 1',
+//         ],
+
+//         53 => [
+//             'label'  => '5:3',
+//             'width'  => 250,
+//             'height' => 150,
+//             'css'    => '5 : 3',
+//         ],
+//     ];
+// }
+
 function custom_print_shop_get_logo_ratios()
 {
-    return [
-        20 => [
-            'label'  => '2:1',
-            'width'  => 200,
-            'height' => 100,
-            'css'    => '2 : 1',
-        ],
+    static $cached_ratios = null;
 
-        30 => [
-            'label'  => '3:1',
-            'width'  => 300,
-            'height' => 100,
-            'css'    => '3 : 1',
-        ],
+    if (null === $cached_ratios) {
+        $cached_ratios = [
+            20 => [
+                'label'  => '2:1',
+                'width'  => 200,
+                'height' => 100,
+                'css'    => '2 : 1',
+            ],
+            30 => [
+                'label'  => '3:1',
+                'width'  => 300,
+                'height' => 100,
+                'css'    => '3 : 1',
+            ],
+            40 => [
+                'label'  => '4:1',
+                'width'  => 400,
+                'height' => 100,
+                'css'    => '4 : 1',
+            ],
+            53 => [
+                'label'  => '5:3',
+                'width'  => 250,
+                'height' => 150,
+                'css'    => '5 : 3',
+            ],
+        ];
+    }
 
-        40 => [
-            'label'  => '4:1',
-            'width'  => 400,
-            'height' => 100,
-            'css'    => '4 : 1',
-        ],
-
-        53 => [
-            'label'  => '5:3',
-            'width'  => 250,
-            'height' => 150,
-            'css'    => '5 : 3',
-        ],
-    ];
+    return $cached_ratios;
 }
 
 // custom function to see if valid ratio is being selected before showing the logo upload button
@@ -114,9 +150,9 @@ if (!function_exists('child_custom_print_shop_logo_customize_register')) {
         ));
     }
 }
-if (!has_action('customize_register', 'child_custom_print_shop_logo_customize_register')) {
-    add_action('customize_register', 'child_custom_print_shop_logo_customize_register');
-}
+// if (!has_action('customize_register', 'child_custom_print_shop_logo_customize_register')) {
+//     add_action('customize_register', 'child_custom_print_shop_logo_customize_register');
+// }
 
 /**
  * JS handlers for Customizer Controls
@@ -145,6 +181,6 @@ if (!function_exists('child_custom_print_shop_customize_controls_js')) {
         );
     }
 }
-if (!has_action('customize_controls_enqueue_scripts', 'child_custom_print_shop_customize_controls_js')) {
-    add_action('customize_controls_enqueue_scripts', 'child_custom_print_shop_customize_controls_js');
-}
+// if (!has_action('customize_controls_enqueue_scripts', 'child_custom_print_shop_customize_controls_js')) {
+//     add_action('customize_controls_enqueue_scripts', 'child_custom_print_shop_customize_controls_js');
+// }
