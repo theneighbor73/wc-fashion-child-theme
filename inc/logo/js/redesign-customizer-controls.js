@@ -10,24 +10,13 @@
   "use strict";
 
   var api = wp.customize;
-  const initialConfigs = customPrintShopConfig?.[0] || {};
+  const initialRatioConfig = customPrintShopConfig?.logoRatios || {};
+  const initialResize = customPrintShopConfig?.defaultScale ?? 0;
 
-  console.log("Initial Configs:", initialConfigs);
+  // console.log("Initial Configs:", initialRatioConfig);
 
   function getLogoConfigByKey(key) {
-    // 1. Fallback to an empty object if the global config doesn't exist
-    // const configSource = customPrintShopConfig || {};
-
-    // // 2. Extract the actual configuration object from index 0
-    // const ratiosData = configSource[0];
-
-    // 3. Safety check: make sure the data object and the requested key exist
-    if (initialConfigs && initialConfigs[key]) {
-      return initialConfigs[key];
-    }
-
-    // Return null if a non-existent key (like 0) is passed
-    return null;
+    return initialRatioConfig[key] || null;
   }
 
   // const config = getLogoConfigByKey(20);
@@ -52,12 +41,10 @@
 
   function toggleLogoControl(ratio) {
     const logoControl = api.control("custom_logo");
+    if (!logoControl) return;
 
-    if (!logoControl) {
-      return;
-    }
-
-    if (Object.prototype.hasOwnProperty.call(initialConfigs, ratio)) {
+    // Direct object property access is faster than hasOwnProperty.call
+    if (initialRatioConfig[ratio] !== undefined) {
       logoControl.activate();
     } else {
       logoControl.deactivate();
@@ -67,30 +54,69 @@
   /**
    * Update crop metadata.
    */
-  function applyLogoCropRatio(config) {
-    // const config = ratios[ratio];
+  // function applyLogoCropRatio(config) {
+  //   // const config = ratios[ratio];
 
-    if (!config) {
-      return;
-    }
+  //   // console.log("Config for ratio:", config);
+
+  //   if (!config) {
+  //     return;
+  //   }
+
+  //   const logoControl = api.control("custom_logo");
+
+  //   // console.log("logoControl:", logoControl);
+
+  //   // console.log("chosen config for ratio:", config);
+
+  //   if (logoControl && logoControl.params) {
+  //     logoControl.params.width = config.width;
+
+  //     logoControl.params.height = config.height;
+
+  //     // logoControl.params.flex_width = false;
+
+  //     // logoControl.params.flex_height = false;
+  //   }
+
+  //   // console.log("Crop updated:", config);
+  // }
+
+  function applyLogoCropRatio(config) {
+    if (!config) return;
 
     const logoControl = api.control("custom_logo");
+    if (!logoControl) return;
 
-    console.log("logoControl:", logoControl);
-
-    console.log("chosen config for ratio:", config);
-
-    if (logoControl && logoControl.params) {
+    // Update the control parameters container metadata
+    if (logoControl.params) {
       logoControl.params.width = config.width;
-
       logoControl.params.height = config.height;
-
-      // logoControl.params.flex_width = false;
-
-      // logoControl.params.flex_height = false;
     }
 
-    console.log("Crop updated:", config);
+    // Without this, the cropping modal will use old cached data from memory when clicked!
+    // if (logoControl.uploader && logoControl.uploader.uploader) {
+    //   console.log("uploader: ", logoControl.uploader.uploader);
+    //   logoControl.uploader.uploader.param("crop_width", config.width);
+    //   logoControl.uploader.uploader.param("crop_height", config.height);
+    // }
+  }
+
+  /**
+   * Apply visual scale.
+   *
+   * @param {number} scale
+   */
+  function applyLogoScale(scale) {
+    scale = Math.max(-100, Math.min(100, scale));
+
+    const multiplier = (100 + scale) / 100;
+
+    $(".custom-logo").css({
+      transform: `scale(${multiplier})`,
+
+      transformOrigin: "left center",
+    });
   }
 
   /**
@@ -98,19 +124,20 @@
    */
 
   api.bind("ready", function () {
-    $(window).on("load", function () {
-      const currentRatio = parseInt(api("logo_ratio")(), 10);
-      console.log("Current Ratio:", currentRatio);
-      const config = getLogoConfigByKey(currentRatio);
-      console.log("Current Config:", config);
-      toggleLogoControl(currentRatio);
-      applyLogoCropRatio(config);
+    // OPTIMIZATION: Do not wrap this in $(window).on('load').
+    // api.bind('ready') guarantees the DOM controls are already built in memory.
+    const currentRatio = parseInt(api("logo_ratio")(), 10);
+    const config = getLogoConfigByKey(currentRatio);
+    const currentScale = parseInt(api("logo_resize")(), 10);
 
-      // uncomment it in the future if you want to allow users to control logo width. width slider or box input
-      // if (!api.control("custom_logo").setting()) {
-      //   $("#customize-control-logo_size").hide();
-      // }
-    });
+    toggleLogoControl(currentRatio);
+    applyLogoCropRatio(config);
+
+    applyLogoScale(currentScale);
+    // uncomment it in the future if you want to allow users to control logo width. width slider or box input
+    // if (!api.control("custom_logo").setting()) {
+    //   $("#customize-control-logo_size").hide();
+    // }
   });
 
   /**
@@ -126,6 +153,18 @@
       toggleLogoControl(newRatio);
       applyLogoCropRatio(config);
     });
+
+    api(
+      "logo_resize",
+
+      function (value) {
+        value.bind(function (newScale) {
+          newScale = parseInt(newScale, 10);
+
+          applyLogoScale(newScale);
+        });
+      },
+    );
 
     /**
      * Existing logo listener: it works with the $("#customize-control-logo_size") to show/hide the logo width control when user upload/remove logo.
