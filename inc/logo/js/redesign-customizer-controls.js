@@ -11,7 +11,7 @@
 
   var api = wp.customize;
   const initialRatioConfig = customPrintShopConfig?.logoRatios || {};
-  const initialResize = customPrintShopConfig?.defaultScale ?? 0;
+  // const initialResize = customPrintShopConfig?.defaultScale ?? 0;
 
   // console.log("Initial Configs:", initialRatioConfig);
 
