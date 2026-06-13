@@ -119,6 +119,53 @@
     });
   }
 
+  function getLogoResizeControl() {
+    return (
+      document.getElementById("customize-control-logo_resize") ||
+      document.querySelector("[id^='customize-control-logo_resize']") ||
+      document.querySelector("[id^='customize-control-logo-resize']") ||
+      document.querySelector(".customize-control-logo_resize") ||
+      document.querySelector(".customize-control-logo-resize")
+    );
+  }
+
+  function decorateLogoResizeControl(attempts) {
+    attempts = typeof attempts === "number" ? attempts : 0;
+    const control = getLogoResizeControl();
+
+    if (!control) {
+      if (attempts < 4) {
+        window.setTimeout(function () {
+          decorateLogoResizeControl(attempts + 1);
+        }, 120);
+      }
+      return;
+    }
+
+    if (control.querySelector(".custom-logo-resize-footer")) {
+      return;
+    }
+
+    const footer = document.createElement("div");
+    footer.className = "custom-logo-resize-footer";
+    footer.innerHTML =
+      '<div class="logo-resize-markers"><span>-100</span><span>0</span><span>+100</span></div>' +
+      '<button type="button" class="button logo-resize-reset">Reset</button>';
+
+    control.appendChild(footer);
+
+    const resetButton = footer.querySelector(".logo-resize-reset");
+    if (resetButton) {
+      resetButton.addEventListener("click", function () {
+        if (api("logo_resize")) {
+          api("logo_resize").set(0);
+        }
+      });
+    }
+
+    // Styling moved to css/editor-style.css and enqueued from PHP; no inline styles injected here.
+  }
+
   /**
    * Initial UI state.
    */
@@ -132,6 +179,7 @@
 
     toggleLogoControl(currentRatio);
     applyLogoCropRatio(config);
+    decorateLogoResizeControl();
 
     applyLogoScale(currentScale);
     // uncomment it in the future if you want to allow users to control logo width. width slider or box input

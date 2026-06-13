@@ -8,3 +8,61 @@
 */
 
 /* Custom CSS styling starts below this line */
+
+/* Logo resize control markers and reset button styling (Customizer controls) */
+/* Loaded into the Customizer controls frame via customize_controls_enqueue_scripts */
+.custom-logo-resize-footer {
+  margin-top: 0.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.logo-resize-markers {
+  position: relative;
+  width: 92%;
+  height: 1.25rem;
+  font-size: 0.6rem;
+  color: #606060;
+  margin-left: auto;
+  margin-right: auto;
+}
+.logo-resize-markers span {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.logo-resize-markers span:first-child {
+  left: 0;
+}
+.logo-resize-markers span:nth-child(2) {
+  left: 50%;
+}
+.logo-resize-markers span:last-child {
+  left: 100%;
+}
+.logo-resize-reset {
+  margin: 0;
+  align-self: flex-start;
+}
+.customize-control-logo_resize .customize-control-title {
+  margin-bottom: 0.35rem;
+}
+
+#_customize-input-logo_resize {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 93%;
+  background: transparent;
+  margin: 0.3rem auto;
+  display: block;
+}
+
+#_customize-input-logo_resize::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  border-radius: 6px;
+  border: 1px solid #1e1e1e;
+  box-sizing: border-box;
+}
