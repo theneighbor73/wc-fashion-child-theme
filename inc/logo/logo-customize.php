@@ -129,6 +129,13 @@ if (!function_exists('child_custom_print_shop_logo_customize_register')) {
         // 	$logo_control->active_callback = 'custom_print_shop_logo_button_appear';
         // }
 
+        $logo_control = $wp_customize->get_control('custom_logo');
+
+        if ($logo_control) {
+            // Add a clear disclaimer description
+            $logo_control->description = __('Please upload only JPG or PNG images. SVG files will not resize correctly.', 'custom-print-shop');
+        }
+
         $wp_customize->add_setting('logo_ratio', array(
             'default'              => 0,
             'type'                 => 'theme_mod',
@@ -157,11 +164,13 @@ if (!function_exists('child_custom_print_shop_logo_customize_register')) {
 
         // Logo Resize additions
 
+        $cached_default_logo_resize = custom_print_shop_get_default_logo_resize();
+
         $wp_customize->add_setting(
             'logo_resize',
             [
                 'default' =>
-                custom_print_shop_get_default_logo_resize(),
+                $cached_default_logo_resize,
 
                 'type' =>
                 'theme_mod',
@@ -194,7 +203,7 @@ if (!function_exists('child_custom_print_shop_logo_customize_register')) {
 
                 'description' =>
                 esc_html__(
-                    '-100% to +100%',
+                    '-100% to +100%. After saving, you may need to refresh homepage to double-check it logo is resized correctly and positioned properly.',
                     'custom-print-shop'
                 ),
 
@@ -225,13 +234,13 @@ if (!function_exists('child_custom_print_shop_customize_controls_js')) {
     {
         wp_enqueue_script('custom-print-shop-child-customizer-controls', esc_url(get_stylesheet_directory_uri()) . '/inc/logo/js/redesign-customizer-controls.js', array('jquery', 'customize-preview'), '201709071000', true);
 
-            // Enqueue child customizer controls stylesheet so control decorations are loaded from an external file
-            wp_enqueue_style(
-                'custom-print-shop-child-customizer-controls-style',
-                esc_url( get_stylesheet_directory_uri() ) . '/css/editor-style.css',
-                [],
-                '20240613'
-            );
+        // Enqueue child customizer controls stylesheet so control decorations are loaded from an external file
+        wp_enqueue_style(
+            'custom-print-shop-child-customizer-controls-style',
+            esc_url(get_stylesheet_directory_uri()) . '/css/editor-style.css',
+            [],
+            '20240613'
+        );
 
         // to pass data from php to js, we can use wp_localize_script to create a global JS object with the data we need. 
         // In this case, we want to pass the allowed logo ratios to our customize-controls.js file 
@@ -311,7 +320,11 @@ function custom_print_shop_logo_resize_to_multiplier(
 
 function child_custom_print_shop_customize_logo_resize($html)
 {
-    // $size = get_theme_mod('logo_width', '25');
+
+    if (empty($html)) {
+        return $html;
+    }
+
     $scale =
         get_theme_mod(
             'logo_resize',
@@ -323,6 +336,7 @@ function child_custom_print_shop_customize_logo_resize($html)
             100 +
             $scale
         ) / 100;
+
     $custom_logo_id = get_theme_mod('custom_logo');
     // set the short side minimum
 
@@ -359,18 +373,45 @@ function child_custom_print_shop_customize_logo_resize($html)
         // add the CSS
         //max-height: ' . $max['height'] . 'px;
         //max-width: ' . $max['width'] . 'px;
-        $css = '
-			<style>
-			.custom-logo {
-				height: ' . $logo['height'] . 'px;
-				width: ' . $logo['width'] . 'px;
-				transform: scale(' . $multiplier . ');
-				transform-origin: left center;
-			}
-			</style>';
 
-        $html = $css . $html;
+
+        // $css = '
+        // 	<style>
+        // 	.custom-logo {
+        // 		height: ' . $logo['height'] . 'px;
+        // 		width: ' . $logo['width'] . 'px;
+        // 		transform: scale(' . $multiplier . ');
+        // 		transform-origin: left center;
+        // 	}
+        // 	</style>';
+
+        // $html = $css . $html;
+
+        if ($logo && isset($logo['width'], $logo['height'])) {
+
+            // Calculate the actual new dimensions instead of using CSS transform
+            $multiplier = (100 + $scale) / 100;
+            $new_width  = round($logo['width'] * $multiplier);
+            $new_height = round($logo['height'] * $multiplier);
+
+            // Inject inline styles affecting actual max-width/height to preserve layout flow
+            $css = sprintf(
+                '<style>
+                    .custom-logo-link .custom-logo {
+                        height: ' . $new_height . 'px;
+                        width: ' . $new_width . 'px;
+                        max-width: 100%%;
+                    }
+                </style>',
+                $new_width,
+                $new_height
+            );
+
+            $html = $css . $html;
+        }
     }
+
+    error_log('Logo Resize HTML: ' . $html);
 
     return $html;
 }
