@@ -10,6 +10,12 @@
  * @todo Preserve `logo_width` as a presentation control, but do not use it to override ratio enforcement.
  */
 
+/*
+	|--------------------------------------------------------------------------
+	| Section: Logo ratio selector
+	|--------------------------------------------------------------------------
+*/
+
 // function custom_print_shop_get_logo_ratios()
 // {
 //     return [
@@ -148,11 +154,68 @@ if (!function_exists('child_custom_print_shop_logo_customize_register')) {
                 $ratios
             ),
         ));
+
+        // Logo Resize additions
+
+        $wp_customize->add_setting(
+            'logo_resize',
+            [
+                'default' =>
+                custom_print_shop_get_default_logo_resize(),
+
+                'type' =>
+                'theme_mod',
+
+                'transport' =>
+                'postMessage',
+
+                'sanitize_callback' =>
+                function ($value) {
+
+                    return max(
+                        -100,
+                        min(
+                            100,
+                            intval($value)
+                        )
+                    );
+                },
+            ]
+        );
+
+        $wp_customize->add_control(
+            'logo_resize',
+            [
+                'label' =>
+                esc_html__(
+                    'Logo Resize',
+                    'custom-print-shop'
+                ),
+
+                'description' =>
+                esc_html__(
+                    '-100% to +100%',
+                    'custom-print-shop'
+                ),
+
+                'section' =>
+                'title_tagline',
+
+                'priority' =>
+                10,
+
+                'type' =>
+                'range',
+
+                'input_attrs' => [
+                    'min' => -100,
+                    'max' => 100,
+                    'step' => 5,
+                ],
+            ]
+        );
     }
 }
-// if (!has_action('customize_register', 'child_custom_print_shop_logo_customize_register')) {
-//     add_action('customize_register', 'child_custom_print_shop_logo_customize_register');
-// }
 
 /**
  * JS handlers for Customizer Controls
@@ -162,11 +225,20 @@ if (!function_exists('child_custom_print_shop_customize_controls_js')) {
     {
         wp_enqueue_script('custom-print-shop-child-customizer-controls', esc_url(get_stylesheet_directory_uri()) . '/inc/logo/js/redesign-customizer-controls.js', array('jquery', 'customize-preview'), '201709071000', true);
 
+            // Enqueue child customizer controls stylesheet so control decorations are loaded from an external file
+            wp_enqueue_style(
+                'custom-print-shop-child-customizer-controls-style',
+                esc_url( get_stylesheet_directory_uri() ) . '/css/editor-style.css',
+                [],
+                '20240613'
+            );
+
         // to pass data from php to js, we can use wp_localize_script to create a global JS object with the data we need. 
         // In this case, we want to pass the allowed logo ratios to our customize-controls.js file 
         // so that we can use it to validate the user's selection and show/hide the logo upload button accordingly.
 
         $ratios = custom_print_shop_get_logo_ratios();
+        $cached_default_logo_resize = custom_print_shop_get_default_logo_resize();
 
         wp_localize_script(
             'custom-print-shop-child-customizer-controls',
@@ -176,11 +248,130 @@ if (!function_exists('child_custom_print_shop_customize_controls_js')) {
                 // 	fn($ratios) => $ratios['css'],
                 // 	$ratios
                 // ),
-                $ratios
+                'logoRatios' => $ratios,
+                'defaultScale' =>
+                $cached_default_logo_resize,
             ]
         );
     }
 }
-// if (!has_action('customize_controls_enqueue_scripts', 'child_custom_print_shop_customize_controls_js')) {
-//     add_action('customize_controls_enqueue_scripts', 'child_custom_print_shop_customize_controls_js');
-// }
+
+/**
+ * Enqueue Customizer preview frame script.
+ */
+if (!function_exists('child_custom_print_shop_customize_preview_js')) {
+    function child_custom_print_shop_customize_preview_js()
+    {
+        wp_enqueue_script(
+            'custom-print-shop-child-customizer-preview',
+            esc_url(get_stylesheet_directory_uri()) . '/inc/logo/js/redesign-customizer-preview.js',
+            array('customize-preview'),
+            '20240613',
+            true
+        );
+    }
+}
+add_action('customize_preview_init', 'child_custom_print_shop_customize_preview_js');
+
+function custom_print_shop_get_default_logo_resize()
+{
+
+    static $cached_default_logo_resize = null;
+
+    if (null === $cached_default_logo_resize) {
+        $cached_default_logo_resize = 0;
+    }
+
+    return $cached_default_logo_resize;
+}
+
+/**
+ * Convert scale into multiplier.
+ *
+ * Example:
+ * -30 → 0.7
+ * 0 → 1
+ * 50 → 1.5
+ */
+function custom_print_shop_logo_resize_to_multiplier(
+    $scale
+) {
+    $scale = max(
+        -100,
+        min(
+            100,
+            absint($scale)
+        )
+    );
+
+    return (
+        100 + $scale
+    ) / 100;
+}
+
+function child_custom_print_shop_customize_logo_resize($html)
+{
+    // $size = get_theme_mod('logo_width', '25');
+    $scale =
+        get_theme_mod(
+            'logo_resize',
+            0
+        );
+
+    $multiplier =
+        (
+            100 +
+            $scale
+        ) / 100;
+    $custom_logo_id = get_theme_mod('custom_logo');
+    // set the short side minimum
+
+    // don't use empty() because we can still use a 0
+    if (is_numeric($scale) && is_numeric($custom_logo_id)) {
+
+        // we're looking for $img['width'] and $img['height'] of original image
+        $logo = wp_get_attachment_metadata($custom_logo_id);
+        if (! $logo) return $html;
+
+        // get the logo support size
+        // $sizes = get_theme_support('custom-logo');
+
+        // // Check for max height and width, default to image sizes if none set in theme
+        // $max['height'] = isset($sizes[0]['height']) ? $sizes[0]['height'] : $logo['height'];
+        // $max['width'] = isset($sizes[0]['width']) ? $sizes[0]['width'] : $logo['width'];
+
+        // // landscape or square
+        // if ($logo['width'] >= $logo['height']) {
+        //     $output = custom_print_shop_min_max($logo['height'], $logo['width'], $max['height'], $max['width'], $size, $min);
+        //     $img = array(
+        //         'height'    => $output['short'],
+        //         'width'        => $output['long']
+        //     );
+        //     // portrait
+        // } else if ($logo['width'] < $logo['height']) {
+        //     $output = custom_print_shop_min_max($logo['width'], $logo['height'], $max['width'], $max['height'], $size, $min);
+        //     $img = array(
+        //         'height'    => $output['long'],
+        //         'width'        => $output['short']
+        //     );
+        // }
+
+        // add the CSS
+        //max-height: ' . $max['height'] . 'px;
+        //max-width: ' . $max['width'] . 'px;
+        $css = '
+			<style>
+			.custom-logo {
+				height: ' . $logo['height'] . 'px;
+				width: ' . $logo['width'] . 'px;
+				transform: scale(' . $multiplier . ');
+				transform-origin: left center;
+			}
+			</style>';
+
+        $html = $css . $html;
+    }
+
+    return $html;
+}
+add_filter('get_custom_logo', 'child_custom_print_shop_customize_logo_resize');

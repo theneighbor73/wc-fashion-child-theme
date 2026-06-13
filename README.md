@@ -24,6 +24,7 @@ Custom Print Shop (By Themescaliber)
 - PHP
 - JS
 - MariaDB
+- Redis
 - Docker
 
 ## Status
