@@ -30,6 +30,23 @@
       return;
     }
 
+    if (logo.tagName === "A") {
+      var imgInside = logo.querySelector("img");
+      if (imgInside) {
+        logo = imgInside;
+      }
+    }
+
+    var logoWrapper = logo.parentElement;
+
+    if (!logoWrapper) {
+      console.error("Logo wrapper not found.");
+      return;
+    }
+
+    // Grab the parent container (.site-logo) to fix the layout root alignment
+    var siteLogoContainer = logoWrapper.parentElement;
+
     // Fallback chain: try natural size -> try attribute size -> try bounding rect -> default to a standard 150px
     var baseWidth = logo.naturalWidth || logo.width;
     var baseHeight = logo.naturalHeight || logo.height;
@@ -38,10 +55,33 @@
     var newWidth = Math.round(baseWidth * multiplier);
     var newHeight = Math.round(baseHeight * multiplier);
 
-    // Apply the exact width/height to match our PHP layout changes
-    logo.style.width = newWidth + "px";
-    logo.style.height = newHeight + "px";
-    logo.style.maxWidth = "100%";
+    // 1. Force the parent block .site-logo container to behave as a centered flexbox
+    if (siteLogoContainer) {
+      siteLogoContainer.style.setProperty("display", "flex", "important");
+      siteLogoContainer.style.setProperty(
+        "justify-content",
+        "center",
+        "important",
+      );
+      siteLogoContainer.style.setProperty("align-items", "center", "important");
+      siteLogoContainer.style.setProperty("width", "100%", "important");
+    }
+
+    // 2. Apply rules to the <img> element
+    logo.style.setProperty("width", newWidth + "px", "important");
+    logo.style.setProperty("height", newHeight + "px", "important");
+    logo.style.setProperty("max-width", "100%", "important");
+    logo.style.setProperty("display", "block", "important");
+    logo.style.setProperty("margin", "0 auto", "important");
+
+    // 3. Apply rules to the <a> wrapper
+    logoWrapper.style.setProperty("display", "inline-flex", "important");
+    logoWrapper.style.setProperty("justify-content", "center", "important");
+    logoWrapper.style.setProperty("align-items", "center", "important");
+    logoWrapper.style.setProperty("margin", "0 auto", "important");
+    logoWrapper.style.setProperty("width", newWidth + "px", "important");
+    logoWrapper.style.setProperty("height", newHeight + "px", "important");
+    logoWrapper.style.setProperty("max-width", "100%", "important");
 
     // Smooth transition effect
     logo.style.transition = "width 0.15s ease-out, height 0.15s ease-out";
