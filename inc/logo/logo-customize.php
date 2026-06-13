@@ -397,10 +397,26 @@ function child_custom_print_shop_customize_logo_resize($html)
             // Inject inline styles affecting actual max-width/height to preserve layout flow
             $css = sprintf(
                 '<style>
-                    .custom-logo-link .custom-logo {
+                    .site-logo {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%%;
+                    }
+                    .custom-logo-link {
+                        display: inline-flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+
+                    .custom-logo {
                         height: ' . $new_height . 'px;
                         width: ' . $new_width . 'px;
                         max-width: 100%%;
+                        display: block;
+                        margin: 0 auto;
                     }
                 </style>',
                 $new_width,
