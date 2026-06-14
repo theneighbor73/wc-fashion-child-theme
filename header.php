@@ -95,17 +95,17 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-2 col-md-2 col-6 py-lg-0 py-md-0 py-3 align-self-center">
-                            <div class="custom-print-shop-logo">
+                            <div class="custom-print-shop-logo d-flex align-items-center h-100">
                                 <!-- Mobile hamburger: reuse theme toggle wrapper so styles apply and it won't overlap the logo -->
-                                <div class="toggle-menu responsive-menu d-inline-block d-lg-none">
-                                    <button role="tab" onclick="custom_print_shop_menu_open()">
+                                <div class="toggle-menu responsive-menu d-inline-flex d-lg-none align-items-center m-0">
+                                    <button role="tab" onclick="custom_print_shop_menu_open()" class="d-flex align-items-center justify-content-center">
                                         <i class="<?php echo esc_attr(get_theme_mod('custom_print_shop_responsive_open_menu_icon', 'fas fa-bars')); ?>"></i>
                                         <span class="screen-reader-text"><?php esc_html_e('Open Menu', 'custom-print-shop'); ?></span>
                                     </button>
                                 </div>
                                 <!-- TODO: keep the custom logo display only. The redesign should remove the site title and tagline output entirely from this column. -->
                                 <?php if (has_custom_logo()) : ?>
-                                    <div class="site-logo"><?php the_custom_logo(); ?></div>
+                                    <div class="site-logo d-flex align-items-center m-0"><?php the_custom_logo(); ?></div>
                                 <?php endif; ?>
 
                                 <!-- Deleted code block: site title and tagline output is removed in the redesign, leaving only the custom logo display. -->
@@ -167,7 +167,7 @@
                                 </div>
                             <?php } ?>
                         </div>
-                        <div class="col-lg-2 col-md-3 align-self-center text-md-end text-center">
+                        <div class="col-lg-2 col-md-3 align-self-center text-md-end text-center d-none d-lg-inline-block">
                             <!-- TODO: authenticated users keep wishlist/account/cart icons. Guests should use a Sign In button instead of the account icon.
 						     Decision: Sign In button should link to the WooCommerce My Account page. For guests, render a small `Sign In` button linking to
 						     `get_permalink( get_option('woocommerce_myaccount_page_id') )`.

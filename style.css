@@ -7,32 +7,60 @@
  Text Domain:  custom-print-shop-child
 */
 
-/* Mobile header: ensure hamburger sits to the left of the logo and does not overlap */
-@media (max-width: 991.98px) {
-  .custom-print-shop-logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .custom-print-shop-logo .toggle-menu.responsive-menu {
-    position: static;
-    margin-right: 0.35rem;
-    display: inline-flex;
-    align-items: center;
-    z-index: 2;
-    flex-shrink: 0; /* Prevents the menu button from compressing */
-  }
-  .custom-print-shop-logo .site-logo {
-    z-index: 1;
+/* 1. Establish absolute vertical centering on the main shared container */
+.custom-print-shop-logo {
+  display: flex;
+  align-items: center; /* Centers contents mathematically across the vertical axis */
+  justify-content: flex-start;
+  gap: 0.75rem;
+  height: auto; /* Keeps container height organic */
+  min-height: 100%;
+}
 
-    /* FIXES: Completely immunizes the logo element from getting squished by flexbox defaults */
-    display: block;
-    flex-shrink: 0;
-    flex-grow: 0;
-  }
-  .custom-print-shop-logo .toggle-menu.responsive-menu button {
-    background: transparent;
-    border: 0;
-    padding: 0;
-  }
+/* 2. Strip standard margins/paddings from the toggle menu wrapper that cause alignment shift */
+.custom-print-shop-logo .toggle-menu.responsive-menu {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: auto; /* Strips hidden customizer height stretches */
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* 3. Center the icon font itself inside the button track */
+.custom-print-shop-logo .toggle-menu.responsive-menu button {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1; /* Prevents font line-height from pushing down the icon button */
+}
+
+/* 4. Force the WordPress structural site logo link wrappers to honor the vertical midpoint */
+.custom-print-shop-logo .site-logo {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.custom-print-shop-logo .site-logo .custom-logo-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* 5. Ensure the logo img element doesn't have inherit top/bottom spacing properties */
+.custom-print-shop-logo .site-logo .custom-logo {
+  display: block;
+  margin: 0; /* Removes standard vertical auto margin blocks pushing elements off center */
+  vertical-align: middle;
 }
