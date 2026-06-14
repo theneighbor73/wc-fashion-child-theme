@@ -234,14 +234,6 @@ if (!function_exists('child_custom_print_shop_customize_controls_js')) {
     {
         wp_enqueue_script('custom-print-shop-child-customizer-controls', esc_url(get_stylesheet_directory_uri()) . '/inc/logo/js/redesign-customizer-controls.js', array('jquery', 'customize-preview'), '201709071000', true);
 
-        // Enqueue child customizer controls stylesheet so control decorations are loaded from an external file
-        wp_enqueue_style(
-            'custom-print-shop-child-customizer-controls-style',
-            esc_url(get_stylesheet_directory_uri()) . '/css/editor-style.css',
-            [],
-            '20240613'
-        );
-
         // to pass data from php to js, we can use wp_localize_script to create a global JS object with the data we need. 
         // In this case, we want to pass the allowed logo ratios to our customize-controls.js file 
         // so that we can use it to validate the user's selection and show/hide the logo upload button accordingly.
@@ -427,7 +419,7 @@ function child_custom_print_shop_customize_logo_resize($html)
         }
     }
 
-    error_log('Logo Resize HTML: ' . $html);
+    // error_log('Logo Resize HTML: ' . $html);
 
     return $html;
 }
