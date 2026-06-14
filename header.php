@@ -94,20 +94,41 @@
             <div class="middle-header">
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-2 col-md-2 col-6 py-lg-0 py-md-0 py-3 align-self-center">
-                            <div class="custom-print-shop-logo d-flex align-items-center h-100">
+                        <div class="col-lg-2 col-md-2 col-12 py-lg-0 py-md-0 py-3 align-self-center">
+                            <div class="custom-print-shop-logo-wrapper">
                                 <!-- Mobile hamburger: reuse theme toggle wrapper so styles apply and it won't overlap the logo -->
-                                <div class="toggle-menu responsive-menu d-inline-flex d-lg-none align-items-center m-0">
-                                    <button role="tab" onclick="custom_print_shop_menu_open()" class="d-flex align-items-center justify-content-center">
+                                <div class="toggle-menu responsive-menu">
+                                    <button role="tab" onclick="custom_print_shop_menu_open()">
                                         <i class="<?php echo esc_attr(get_theme_mod('custom_print_shop_responsive_open_menu_icon', 'fas fa-bars')); ?>"></i>
                                         <span class="screen-reader-text"><?php esc_html_e('Open Menu', 'custom-print-shop'); ?></span>
                                     </button>
                                 </div>
                                 <!-- TODO: keep the custom logo display only. The redesign should remove the site title and tagline output entirely from this column. -->
                                 <?php if (has_custom_logo()) : ?>
-                                    <div class="site-logo d-flex align-items-center m-0"><?php the_custom_logo(); ?></div>
+                                    <div class="site-logo"><?php the_custom_logo(); ?></div>
                                 <?php endif; ?>
-
+                                <div
+                                    class="header-utility-icons">
+                                    <span class="wishlist">
+                                        <?php if (defined('YITH_WCWL')) { ?>
+                                            <a
+                                                class="wishlist_view"
+                                                href="<?php echo YITH_WCWL()->get_wishlist_url(); ?>"
+                                                title="<?php esc_attr_e('Wishlist', 'custom-print-shop'); ?>">
+                                                <i class="far fa-heart"></i>
+                                            </a>
+                                        <?php } ?>
+                                    </span>
+                                    <?php if (class_exists('woocommerce')) { ?>
+                                        <span class="myaccount-link"><a
+                                                href="<?php echo esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>"><i class="far fa-user"></i><span class="screen-reader-text"><?php esc_html_e('My Account', 'custom-print-shop'); ?></span></a></span>
+                                    <?php } ?> <?php if (class_exists('woocommerce')) { ?>
+                                        <span class="cart_no"><a
+                                                href="<?php if (function_exists('wc_get_cart_url')) {
+                                                            echo esc_url(wc_get_cart_url());
+                                                        } ?>"><i class="fas fa-shopping-cart"></i><span class="screen-reader-text"><?php esc_html_e('Cart item', 'custom-print-shop'); ?></span></a></span>
+                                    <?php } ?>
+                                </div>
                                 <!-- Deleted code block: site title and tagline output is removed in the redesign, leaving only the custom logo display. -->
                                 <?php /*  if( get_theme_mod( 'custom_print_shop_site_title',true) != '') { ?>
 	            	<?php $blog_info = get_bloginfo( 'name' ); ?>
