@@ -27,12 +27,12 @@ function custom_print_shop_child_assets()
 	);
 
 	// For Customizer controls
-	wp_enqueue_style(
-		'custom-print-shop-child-customizer-controls-style',
-		esc_url(get_stylesheet_directory_uri()) . '/css/editor-style.css',
-		[],
-		'20240613'
-	);
+	// wp_enqueue_style(
+	// 	'custom-print-shop-child-customizer-controls-style',
+	// 	esc_url(get_stylesheet_directory_uri()) . '/css/editor-style.css',
+	// 	[],
+	// 	'20240613'
+	// );
 }
 
 add_action(
@@ -40,6 +40,20 @@ add_action(
 	'custom_print_shop_child_assets'
 );
 
+/**
+ * Enqueue styles specifically for the WordPress Customizer controls sidebar.
+ */
+function child_theme_enqueue_customizer_controls_styles()
+{
+	wp_enqueue_style(
+		'custom-print-shop-child-customizer-controls-style',
+		esc_url(get_stylesheet_directory_uri()) . '/css/customizer-style.css',
+		[],
+		'20240613'
+	);
+}
+// This hook fires only when the Customizer admin panel layout is being built
+add_action('customize_controls_print_styles', 'child_theme_enqueue_customizer_controls_styles');
 
 /**
  * Load child logo customization module.
