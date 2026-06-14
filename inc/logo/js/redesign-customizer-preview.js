@@ -14,8 +14,6 @@
   //       return;
   //     }
 
-  //     // console.log("Logo:", logo);
-
   //     logo.style.transform = "scale(" + multiplier + ")";
   //     logo.style.transformOrigin = "left center";
   //     logo.style.transition = "transform 0.15s ease-out";

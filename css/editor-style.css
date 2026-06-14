@@ -11,6 +11,9 @@
 
 /* Logo resize control markers and reset button styling (Customizer controls) */
 /* Loaded into the Customizer controls frame via customize_controls_enqueue_scripts */
+
+// Logo resize control container styling
+
 .custom-logo-resize-footer {
   margin-top: 0.05rem;
   display: flex;

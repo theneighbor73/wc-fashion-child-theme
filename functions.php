@@ -25,6 +25,14 @@ function custom_print_shop_child_assets()
 		get_stylesheet_uri(),
 		['parent-style']
 	);
+
+	// For Customizer controls
+	wp_enqueue_style(
+		'custom-print-shop-child-customizer-controls-style',
+		esc_url(get_stylesheet_directory_uri()) . '/css/editor-style.css',
+		[],
+		'20240613'
+	);
 }
 
 add_action(
