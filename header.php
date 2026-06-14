@@ -96,6 +96,13 @@
                     <div class="row">
                         <div class="col-lg-2 col-md-2 col-6 py-lg-0 py-md-0 py-3 align-self-center">
                             <div class="custom-print-shop-logo">
+                                <!-- Mobile hamburger: reuse theme toggle wrapper so styles apply and it won't overlap the logo -->
+                                <div class="toggle-menu responsive-menu d-inline-block d-lg-none">
+                                    <button role="tab" onclick="custom_print_shop_menu_open()">
+                                        <i class="<?php echo esc_attr(get_theme_mod('custom_print_shop_responsive_open_menu_icon', 'fas fa-bars')); ?>"></i>
+                                        <span class="screen-reader-text"><?php esc_html_e('Open Menu', 'custom-print-shop'); ?></span>
+                                    </button>
+                                </div>
                                 <!-- TODO: keep the custom logo display only. The redesign should remove the site title and tagline output entirely from this column. -->
                                 <?php if (has_custom_logo()) : ?>
                                     <div class="site-logo"><?php the_custom_logo(); ?></div>
@@ -128,7 +135,7 @@
                         <div class="col-lg-6 col-md-2 col-6 py-lg-0 py-md-0 py-3 align-self-center">
                             <div class="toggle-menu responsive-menu text-lg-start text-md-start text-start">
                                 <!-- TODO: this button opens the mobile hamburger menu. For redesigned mobile layout, render this hamburger in the first mobile column. Preserve the current `custom_print_shop_menu_open()` / `custom_print_shop_menu_close()` behavior. -->
-                                <button role="tab" onclick="custom_print_shop_menu_open()">
+                                <button role="tab" class="d-none d-lg-inline-block" onclick="custom_print_shop_menu_open()">
                                     <i class="<?php echo esc_attr(get_theme_mod('custom_print_shop_responsive_open_menu_icon', 'fas fa-bars')); ?>"></i>
                                     <?php echo esc_html(get_theme_mod('custom_print_shop_open_menu_label', __('Open Menu', 'custom-print-shop'))); ?><span class="screen-reader-text"><?php esc_html_e('Open Menu', 'custom-print-shop'); ?></span>
                                 </button>
