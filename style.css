@@ -8,13 +8,12 @@
 */
 
 /* --- Desktop Layout Rules (Unchanged) --- */
-/* --- Desktop Layout Rules (Unchanged) --- */
 @media (min-width: 992px) {
   .custom-print-shop-logo-wrapper {
-    display: block;
+    display: flex;
   }
   .header-utility-icons {
-    display: none !important;
+    display: none;
   }
 }
 
@@ -23,91 +22,75 @@
   /* 1. Main Parent Track: Disable wrapping entirely */
   .custom-print-shop-logo-wrapper {
     display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important; /* Prevents elements from stacking under each other */
-    align-items: center !important; /* Centers all 4 columns vertically */
-    justify-content: flex-start !important; /* Forces order from left to right */
-    width: 100% !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-    box-sizing: border-box !important;
-    gap: 1rem !important; /* Structural spacing gap between Column 1 and Column 2 */
+    flex-direction: row;
+    flex: 1 1 0;
+    align-items: center; /* Centers all 4 columns vertically */
+    justify-content: center; /* order from left to right */
+    width: 100%;
+    padding: 0.25rem;
+    margin: 0;
+    gap: 0.75rem; /* Structural spacing gap between Column 1 and Column 2 */
   }
 
   /* 2. Column 1: Hamburger (Strips the hidden 171.5px width container box) */
   .custom-print-shop-logo-wrapper .toggle-menu.responsive-menu {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 44px !important; /* Forcefully shrinks the massive box to fit just the button */
-    max-width: 44px !important;
-    min-width: 44px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    flex-shrink: 0 !important; /* Prevents compression */
+    width: 44px; /*  shrinks the massive box to fit just the button */
+    max-width: 44px;
+    padding: 0;
+    flex-shrink: 0; /* Prevents compression */
   }
 
   .custom-print-shop-logo-wrapper .toggle-menu.responsive-menu button {
-    background: transparent !important;
-    border: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 1.5rem !important;
-    line-height: 1 !important;
-    width: 100% !important;
-    height: 100% !important;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background: transparent;
+    border: 0;
+    font-size: 1rem;
+    line-height: 1;
+    width: 100%;
+    height: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
 
   /* 3. Column 2: Logo Container */
   .custom-print-shop-logo-wrapper .site-logo {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: auto !important;
-    flex-shrink: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
   }
 
-  .custom-print-shop-logo-wrapper .site-logo .custom-logo-link {
-    display: inline-flex !important;
-    align-items: center !important;
-  }
+  /* .custom-print-shop-logo-wrapper .site-logo .custom-logo-link {
+    display: inline-flex;
+    align-items: center;
+  } */
 
   .custom-print-shop-logo-wrapper .site-logo .custom-logo {
-    height: 42px !important; /* Keeps the crisp aspect ratio scaling */
-    width: auto !important;
-    max-width: 130px !important;
-    display: block !important;
-    object-fit: contain !important;
+    height: 42px; /* Keeps the crisp aspect ratio scaling */
+    width: auto;
+    max-width: 110px;
+    object-fit: contain;
   }
 
   /* 4. Column 4: Utility Icons (Column 3 is generated right here) */
   .custom-print-shop-logo-wrapper .header-utility-icons {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-end !important;
-    gap: 1.15rem !important; /* Layout distance between the heart, profile, and cart */
-
-    /* THE MAGIC RESET: This forces the container to swallow all leftover room, */
-    /* creating your empty third column space dynamically to the left side. */
-    margin-left: auto !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    margin-right: 0 !important;
-    padding: 0 !important;
-    flex-shrink: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1 1 0;
+    gap: 0.25rem;
   }
 
   .custom-print-shop-logo-wrapper .header-utility-icons span,
   .custom-print-shop-logo-wrapper .header-utility-icons a {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-decoration: none !important;
-    font-size: 1.25rem !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 1rem;
+    margin-left: 10px !important;
   }
 }
