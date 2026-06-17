@@ -33,11 +33,26 @@ function custom_backend_validate_search()
 		if ($clean_search_term === "" || $term_length < 3) {
 
 			// Log confirmation to your error log file to verify the trigger is working
-			error_log("[Layer 2 Blocked] Term: '" . $clean_search_term . "' | Length: " . $term_length);
+			// error_log("[Layer 2 Blocked] Term: '" . $clean_search_term . "' | Length: " . $term_length);
 
 			// 5. Inject a secure error alert message into the active WooCommerce session queue
-			if (function_exists('wc_add_notice')) {
-				wc_add_notice('Search terms must be at least 3 characters long.', 'error');
+			// if (function_exists('wc_add_notice')) {
+			// 	wc_add_notice('Search terms must be at least 3 characters long.', 'error');
+			// }
+
+			// Set a custom session flag containing our specific search error message
+			// if (WC()->session) {
+			// 	WC()->session->set('search_validation_error', 'Search terms must be at least 3 characters long.');
+			// }
+
+			if (WC()->session) {
+				// 1. THE FIXED LAYER: Forcibly set a session cookie if the user is a guest!
+				if (! WC()->session->has_session()) {
+					WC()->session->set_customer_session_cookie(true);
+				}
+
+				// 2. Save your specific search error flag
+				WC()->session->set('search_validation_error', 'Search terms must be at least 3 characters long.');
 			}
 
 			// 6. Forcefully pull the plug on the bad request and redirect them safely to the main shop page
@@ -54,26 +69,41 @@ add_action('wp_enqueue_scripts', 'custom_print_shop_enqueue_scripts');
 
 function custom_print_shop_enqueue_scripts()
 {
-	// 1. Enqueue your custom JavaScript file
-	// Assumes your file is saved inside your child theme folder at: assets/js/search-validation.js
+	// wp_enqueue_script(
+	// 	'print-shop-search-validation', // Can use wp_localize_script() by referencing this name later to pass data.
+	// 	get_stylesheet_directory_uri() . '/js/search-validation.js',
+	// 	[], // Add dependencies here if needed (e.g., array('jquery') if using jQuery)
+	// 	'1.0.0', // Version
+	// 	true     // Loads script in the footer so it doesn't block page rendering
+	// );
+
 	wp_enqueue_script(
 		'print-shop-search-validation',
 		get_stylesheet_directory_uri() . '/js/search-validation.js',
-		array(), // Add dependencies here if needed (e.g., array('jquery') if using jQuery)
+		[],
 		'1.0.0',
-		true     // Loads script in the footer so it doesn't block page rendering
+		true
 	);
 
-	// 2. BACKEND INTEGRATION: If there is a waiting WooCommerce error notice, 
+	// BACKEND INTEGRATION: If there is a waiting WooCommerce error notice, 
 	// pass it directly to our JavaScript toast system so it can render it!
-	if (function_exists('wc_get_notices') && wc_notice_count('error') > 0) {
-		$notices = wc_get_notices('error');
 
-		// Grab the first error message string and strip any raw HTML tags from it
-		$error_message = strip_tags($notices[0]['notice']);
+	if (WC()->session && WC()->session->get('search_validation_error')) {
+		// $notices = wc_get_notices('error');
+		// // error_log('wc_notices: ' . print_r($notices, true));
 
-		// Clear the notice from WooCommerce's internal template queue so it doesn't print twice
-		wc_clear_notices();
+		// // Grab the first error message string and strip any raw HTML tags from it
+		// $error_message = strip_tags($notices[0]['notice']);
+
+
+		// // Clear the notice from WooCommerce's internal template queue so it doesn't print twice
+		// wc_clear_notices();
+
+		$error_message = WC()->session->get('search_validation_error');
+		error_log('new_error_message: ' . print_r($error_message, true));
+
+		// Clear it immediately so it doesn't fire again on the next page refresh
+		WC()->session->set('search_validation_error', null);
 
 		// Send the error message string directly into JavaScript as a global variable
 		wp_localize_script('print-shop-search-validation', 'backendToastError', array(

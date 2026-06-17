@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+  console.log("Backend passes data: ", backendToastError);
   // 1. Create the Toast container wrapper dynamically in the HTML DOM body
   let toastContainer = document.querySelector(".custom-toast-container");
   if (!toastContainer) {
