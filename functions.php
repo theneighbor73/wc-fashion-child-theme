@@ -39,6 +39,13 @@ function custom_print_shop_child_assets()
 		get_stylesheet_uri(),
 		array($parent_style_handle)
 	);
+
+	wp_enqueue_style(
+		'woocommerce-elements-style',
+		get_theme_file_uri('css/woocommerce.css'),
+		[],
+		'20260621'
+	);
 }
 
 add_action(
@@ -62,15 +69,14 @@ function child_theme_enqueue_customizer_controls_styles()
 // This hook fires only when the Customizer admin panel layout is being built
 add_action('customize_controls_print_styles', 'child_theme_enqueue_customizer_controls_styles');
 
-
-
 /**
  * Load customization files.
  */
 
 $all_customization_file_directories = array(
 	'inc/logo/logo-customize.php',
-	'inc/product-search-validation/backend.php'
+	'inc/product-search-validation/backend.php',
+	'inc/checkout-page/backend.php'
 );
 
 foreach ($all_customization_file_directories as $load_directory) {
