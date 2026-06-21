@@ -229,39 +229,42 @@ if (!function_exists('child_custom_print_shop_logo_customize_register')) {
 /**
  * JS handlers for Customizer Controls
  */
-if (!function_exists('child_custom_print_shop_customize_controls_js')) {
-    function child_custom_print_shop_customize_controls_js()
-    {
-        wp_enqueue_script('custom-print-shop-child-customizer-controls', esc_url(get_stylesheet_directory_uri()) . '/inc/logo/js/redesign-customizer-controls.js', array('jquery', 'customize-preview'), '201709071000', true);
+function child_custom_print_shop_customizer_logo_controls_js()
+{
+    wp_enqueue_script('child-custom-print-shop-customizer-logo-controls', esc_url(get_stylesheet_directory_uri()) . '/inc/logo/js/redesign-customizer-controls.js', array('jquery', 'customize-preview'), '201709071000', true);
 
-        // to pass data from php to js, we can use wp_localize_script to create a global JS object with the data we need. 
-        // In this case, we want to pass the allowed logo ratios to our customize-controls.js file 
-        // so that we can use it to validate the user's selection and show/hide the logo upload button accordingly.
+    // to pass data from php to js, we can use wp_localize_script to create a global JS object with the data we need. 
+    // In this case, we want to pass the allowed logo ratios to our customize-controls.js file 
+    // so that we can use it to validate the user's selection and show/hide the logo upload button accordingly.
 
-        $ratios = custom_print_shop_get_logo_ratios();
-        $cached_default_logo_resize = custom_print_shop_get_default_logo_resize();
+    $ratios = custom_print_shop_get_logo_ratios();
+    $cached_default_logo_resize = custom_print_shop_get_default_logo_resize();
 
-        wp_localize_script(
-            'custom-print-shop-child-customizer-controls',
-            'customPrintShopConfig',
-            [
-                // 'logoRatios' => array_map(
-                // 	fn($ratios) => $ratios['css'],
-                // 	$ratios
-                // ),
-                'logoRatios' => $ratios,
-                'defaultScale' =>
-                $cached_default_logo_resize,
-            ]
-        );
-    }
-}
+    wp_localize_script(
+        'child-custom-print-shop-customizer-logo-controls',
+        'customPrintShopConfig',
+        [
+            // 'logoRatios' => array_map(
+            // 	fn($ratios) => $ratios['css'],
+            // 	$ratios
+            // ),
+            'logoRatios' => $ratios,
+            'defaultScale' =>
+            $cached_default_logo_resize,
+        ]
+    );
+};
+
+add_action(
+    'customize_controls_enqueue_scripts',
+    'child_custom_print_shop_customizer_logo_controls_js'
+);
 
 /**
- * Enqueue Customizer preview frame script.
+ * Enqueue Customizer preview frame script for logo customization.
  */
-if (!function_exists('child_custom_print_shop_customize_preview_js')) {
-    function child_custom_print_shop_customize_preview_js()
+if (!function_exists('child_custom_print_shop_customize_logo_preview_js')) {
+    function child_custom_print_shop_customize_logo_preview_js()
     {
         wp_enqueue_script(
             'custom-print-shop-child-customizer-preview',
@@ -272,7 +275,22 @@ if (!function_exists('child_custom_print_shop_customize_preview_js')) {
         );
     }
 }
-add_action('customize_preview_init', 'child_custom_print_shop_customize_preview_js');
+add_action('customize_preview_init', 'child_custom_print_shop_customize_logo_preview_js');
+
+/**
+ * Enqueue styles specifically for the WordPress Customizer logo controls sidebar.
+ */
+function child_theme_enqueue_customizer_logo_controls_styles()
+{
+    wp_enqueue_style(
+        'custom-print-shop-child-customizer-controls-style',
+        esc_url(get_stylesheet_directory_uri()) . '/css/customizer-style.css',
+        [],
+        '20240613'
+    );
+}
+// This hook fires only when the Customizer admin panel layout is being built
+add_action('customize_controls_print_styles', 'child_theme_enqueue_customizer_logo_controls_styles');
 
 function custom_print_shop_get_default_logo_resize()
 {

@@ -96,3 +96,22 @@
     applyLogoScaleToPreview(current);
   });
 })();
+
+/**
+ * Core Blueprint File: design-preview.js
+ * Enqueued via: add_action('customize_preview_init', ...)
+ */
+(function () {
+  // 1. Hook into the specific theme option setting ID
+  wp.customize("_customize-input-logo_resize", function (value) {
+    // 2. Bind a listener event to catch changes on-the-fly
+    value.bind(function (newval) {
+      const logoImage = document.querySelector(".site-logo img");
+
+      // 3. Prevent null pointer crashes safely
+      if (logoImage) {
+        logoImage.style.width = newval + "px";
+      }
+    });
+  });
+})();

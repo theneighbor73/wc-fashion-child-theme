@@ -153,7 +153,7 @@
 			        <?php } */ ?>
                             </div>
                         </div>
-                        <div class="col-lg-6 col-md-2 col-6 py-lg-0 py-md-0 py-3 align-self-center d-lg-block d-none">
+                        <div class="col-lg-6 col-md-2 col-6 py-lg-0 py-md-0 py-3 align-self-center">
                             <div class="toggle-menu responsive-menu text-lg-start text-md-start text-start">
                                 <!-- TODO: this button opens the mobile hamburger menu. For redesigned mobile layout, render this hamburger in the first mobile column. Preserve the current `custom_print_shop_menu_open()` / `custom_print_shop_menu_close()` behavior. -->
                                 <button role="tab" class="d-none d-lg-inline-block" onclick="custom_print_shop_menu_open()">
