@@ -31,7 +31,6 @@ add_action('template_redirect', function () {
             wp_safe_redirect(get_permalink(wc_get_page_id('shop')));
             exit;
         } else if (preg_match("/([\p{L}\p{N}'])\\1{3,}/u", $clean_search_term)) {
-            error_log("clean_search_term: " . $clean_search_term);
             if (WC()->session) {
                 if (! WC()->session->has_session()) {
                     WC()->session->set_customer_session_cookie(true);

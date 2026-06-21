@@ -10,44 +10,73 @@
  * @todo Preserve `logo_width` as a presentation control, but do not use it to override ratio enforcement.
  */
 
+/**
+ * Replace parent logo customization with child implementation.
+ */
+function child_logo_customize_overrides()
+{
+    /*
+	|--------------------------------------------------------------------------
+	| Disable parent logo system
+	|--------------------------------------------------------------------------
+	*/
+
+    remove_action(
+        'customize_register',
+        'custom_print_shop_logo_customize_register'
+    );
+
+    remove_action(
+        'customize_controls_enqueue_scripts',
+        'custom_print_shop_customize_controls_js'
+    );
+
+    remove_filter(
+        'get_custom_logo',
+        'custom_print_shop_customize_logo_resize'
+    );
+
+
+    /*
+	|--------------------------------------------------------------------------
+	| Register child logo system
+	|--------------------------------------------------------------------------
+	*/
+
+    if (
+        function_exists(
+            'child_custom_print_shop_logo_customize_register'
+        )
+    ) {
+        add_action(
+            'customize_register',
+            'child_custom_print_shop_logo_customize_register'
+        );
+    }
+
+    if (
+        function_exists(
+            'child_custom_print_shop_customize_controls_js'
+        )
+    ) {
+        add_action(
+            'customize_controls_enqueue_scripts',
+            'child_custom_print_shop_customize_controls_js'
+        );
+    }
+}
+
+add_action(
+    'after_setup_theme',
+    'child_logo_customize_overrides',
+    20
+);
+
 /*
 	|--------------------------------------------------------------------------
 	| Section: Logo ratio selector
 	|--------------------------------------------------------------------------
 */
-
-// function custom_print_shop_get_logo_ratios()
-// {
-//     return [
-//         20 => [
-//             'label'  => '2:1',
-//             'width'  => 200,
-//             'height' => 100,
-//             'css'    => '2 : 1',
-//         ],
-
-//         30 => [
-//             'label'  => '3:1',
-//             'width'  => 300,
-//             'height' => 100,
-//             'css'    => '3 : 1',
-//         ],
-
-//         40 => [
-//             'label'  => '4:1',
-//             'width'  => 400,
-//             'height' => 100,
-//             'css'    => '4 : 1',
-//         ],
-
-//         53 => [
-//             'label'  => '5:3',
-//             'width'  => 250,
-//             'height' => 150,
-//             'css'    => '5 : 3',
-//         ],
-//     ];
-// }
 
 function custom_print_shop_get_logo_ratios()
 {
@@ -106,28 +135,6 @@ function custom_print_shop_get_logo_ratios()
 if (!function_exists('child_custom_print_shop_logo_customize_register')) {
     function child_custom_print_shop_logo_customize_register($wp_customize)
     {
-        // error_log('Running child_custom_print_shop_logo_customize_register');
-        // Logo Resizer additions
-        // TODO: redesign requirement calls for strict custom logo ratio validation: 2:1, 3:1, or 4:1.
-        //       The Customizer should let the user choose one of these ratios first, then open
-        //       the media library/uploader with that ratio enforced.
-        //       Keep current `logo_width` control as a presentation sizing helper, but do not
-        //       use it to bypass the selected ratio constraint.
-        // TODO: validation requirement from redesign: enforce the selected ratio on upload.
-        // Recommendation: perform validation at upload-time in the Customizer preview using
-        // `wp_handle_upload_prefilter` or by intercepting the Customizer upload flow. Inspect
-        // the uploaded file with `getimagesize()` and reject uploads whose width/height
-        // ratio does not match the selected preset.
-        // Keep `logo_width` as a presentation control but do not use it to bypass validation.
-
-        // We need this part to render the hide/unhide motion from server side but it already takes care of on client-side.
-
-        // $logo_control = $wp_customize->get_control('custom_logo');
-
-        // if ($logo_control) {
-        // 	// Link it to our conditional evaluation function
-        // 	$logo_control->active_callback = 'custom_print_shop_logo_button_appear';
-        // }
 
         $logo_control = $wp_customize->get_control('custom_logo');
 
@@ -233,10 +240,6 @@ function child_custom_print_shop_customizer_logo_controls_js()
 {
     wp_enqueue_script('child-custom-print-shop-customizer-logo-controls', esc_url(get_stylesheet_directory_uri()) . '/inc/logo/js/redesign-customizer-controls.js', array('jquery', 'customize-preview'), '201709071000', true);
 
-    // to pass data from php to js, we can use wp_localize_script to create a global JS object with the data we need. 
-    // In this case, we want to pass the allowed logo ratios to our customize-controls.js file 
-    // so that we can use it to validate the user's selection and show/hide the logo upload button accordingly.
-
     $ratios = custom_print_shop_get_logo_ratios();
     $cached_default_logo_resize = custom_print_shop_get_default_logo_resize();
 
@@ -263,6 +266,7 @@ add_action(
 /**
  * Enqueue Customizer preview frame script for logo customization.
  */
+
 if (!function_exists('child_custom_print_shop_customize_logo_preview_js')) {
     function child_custom_print_shop_customize_logo_preview_js()
     {
@@ -436,8 +440,6 @@ function child_custom_print_shop_customize_logo_resize($html)
             $html = $css . $html;
         }
     }
-
-    // error_log('Logo Resize HTML: ' . $html);
 
     return $html;
 }

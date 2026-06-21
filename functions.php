@@ -19,8 +19,6 @@
 function custom_print_shop_child_assets()
 {
 	$parent_style_handle = 'custom-print-shop-basic-style';
-	$parent_style_src = esc_url(get_template_directory_uri()) . '/style.css';
-	$parent_style_ver = filemtime(get_template_directory() . '/style.css');
 
 	if (wp_style_is($parent_style_handle, 'registered')) {
 		wp_deregister_style($parent_style_handle);
@@ -28,11 +26,14 @@ function custom_print_shop_child_assets()
 
 	wp_register_style(
 		$parent_style_handle,
-		$parent_style_src,
-		array(),
-		$parent_style_ver
+		esc_url(get_template_directory_uri()) . '/style.css',
+		array()
 	);
-	wp_enqueue_style($parent_style_handle);
+	wp_enqueue_style(
+		$parent_style_handle,
+		esc_url(get_template_directory_uri()) . '/style.css',
+		array()
+	);
 
 	wp_enqueue_style(
 		'child-style',
@@ -85,65 +86,3 @@ foreach ($all_customization_file_directories as $load_directory) {
 		require_once $ready_directory;
 	}
 };
-
-/**
- * Replace parent logo customization with child implementation.
- */
-function custom_print_shop_child_setup_overrides()
-{
-	/*
-	|--------------------------------------------------------------------------
-	| Disable parent logo system
-	|--------------------------------------------------------------------------
-	*/
-
-	remove_action(
-		'customize_register',
-		'custom_print_shop_logo_customize_register'
-	);
-
-	remove_action(
-		'customize_controls_enqueue_scripts',
-		'custom_print_shop_customize_controls_js'
-	);
-
-	remove_filter(
-		'get_custom_logo',
-		'custom_print_shop_customize_logo_resize'
-	);
-
-
-	/*
-	|--------------------------------------------------------------------------
-	| Register child logo system
-	|--------------------------------------------------------------------------
-	*/
-
-	if (
-		function_exists(
-			'child_custom_print_shop_logo_customize_register'
-		)
-	) {
-		add_action(
-			'customize_register',
-			'child_custom_print_shop_logo_customize_register'
-		);
-	}
-
-	if (
-		function_exists(
-			'child_custom_print_shop_customize_controls_js'
-		)
-	) {
-		add_action(
-			'customize_controls_enqueue_scripts',
-			'child_custom_print_shop_customize_controls_js'
-		);
-	}
-}
-
-add_action(
-	'after_setup_theme',
-	'custom_print_shop_child_setup_overrides',
-	20
-);
