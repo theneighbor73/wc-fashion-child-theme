@@ -103,6 +103,24 @@
                                         <span class="screen-reader-text"><?php esc_html_e('Open Menu', 'custom-print-shop'); ?></span>
                                     </button>
                                 </div>
+                                <div id="menu-sidebar" class="nav side-menu d-lg-none">
+                                    <nav id="primary-site-navigation" class="primary-navigation" role="navigation" aria-label="<?php esc_attr_e('Top Menu', 'custom-print-shop'); ?>">
+                                        <?php
+                                        wp_nav_menu(array(
+                                            'theme_location' => 'primary',
+                                            'container_class' => 'main-menu-navigation clearfix',
+                                            'menu_class' => 'clearfix',
+                                            'items_wrap' => '<ul id="%1$s" class="%2$s mobile_nav m-0 p-0">%3$s</ul>',
+                                            'fallback_cb' => 'wp_page_menu',
+                                        ));
+                                        ?>
+                                        <a href="javascript:void(0)" class="closebtn responsive-menu" onclick="custom_print_shop_menu_close()">
+                                            <?php echo esc_html(get_theme_mod('custom_print_shop_close_menu_label', __('Close Menu', 'custom-print-shop'))); ?><i class="<?php echo esc_attr(get_theme_mod('custom_print_shop_responsive_close_menu_icon', 'fas fa-times')); ?>">
+                                            </i>
+                                            <span class="screen-reader-text"><?php esc_html_e('Close Menu', 'custom-print-shop'); ?></span>
+                                        </a>
+                                    </nav>
+                                </div>
                                 <!-- TODO: keep the custom logo display only. The redesign should remove the site title and tagline output entirely from this column. -->
                                 <?php if (has_custom_logo()) : ?>
                                     <div class="site-logo"><?php the_custom_logo(); ?></div>
@@ -153,7 +171,7 @@
 			        <?php } */ ?>
                             </div>
                         </div>
-                        <div class="col-lg-6 col-md-2 col-6 py-lg-0 py-md-0 py-3 align-self-center">
+                        <div class="col-lg-6 col-md-2 col-6 py-lg-0 py-md-0 py-3 align-self-center d-lg-block d-none">
                             <div class="toggle-menu responsive-menu text-lg-start text-md-start text-start">
                                 <!-- TODO: this button opens the mobile hamburger menu. For redesigned mobile layout, render this hamburger in the first mobile column. Preserve the current `custom_print_shop_menu_open()` / `custom_print_shop_menu_close()` behavior. -->
                                 <button role="tab" class="d-none d-lg-inline-block" onclick="custom_print_shop_menu_open()">
