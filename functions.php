@@ -86,22 +86,6 @@ foreach ($all_customization_file_directories as $load_directory) {
 	}
 };
 
-// $child_logo_customize =
-// 	get_stylesheet_directory()
-// 	. '/inc/logo/logo-customize.php';
-
-// if (file_exists($child_logo_customize)) {
-// 	require_once $child_logo_customize;
-// }
-
-// $child_product_search_validation =
-// 	get_stylesheet_directory()
-// 	. '/inc/product-search-validation/product-search-validation.php';
-
-// if (file_exists($child_product_search_validation)) {
-// 	require_once $child_product_search_validation;
-// }
-
 /**
  * Replace parent logo customization with child implementation.
  */

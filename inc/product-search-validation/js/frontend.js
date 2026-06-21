@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Create container for the toast(s)
-  const specialCharRegex = /[^a-zA-Z0-9 ]/;
-  const invalidSearchRegex = /([a-zA-Z0-9])\1{4,}/;
+  const specialCharRegex = /[^\p{L}\p{N} ']/u;
+  const invalidSearchRegex = /([\p{L}\p{N}'])\1{3,}/u;
+
   let outerToast = document.querySelector(".custom-toast-container");
   if (!outerToast) {
     outerToast = document.createElement("div");

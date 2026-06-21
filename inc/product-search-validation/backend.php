@@ -6,7 +6,7 @@
 
 add_action('template_redirect', function () {
     if (is_search()) {
-        $raw_search_term = isset($_GET['s']) ? $_GET['s'] : '';
+        $raw_search_term = isset($_GET['s']) ? wp_unslash($_GET['s']) : '';
         $clean_search_term = trim($raw_search_term);
         $term_length = strlen($clean_search_term);
 
@@ -20,7 +20,7 @@ add_action('template_redirect', function () {
 
             wp_safe_redirect(get_permalink(wc_get_page_id('shop')));
             exit;
-        } else if (preg_match('/[^a-zA-Z0-9 ]/', $clean_search_term)) {
+        } else if (preg_match("/[^\p{L}\p{N} ']/u", $clean_search_term)) {
             if (WC()->session) {
                 if (! WC()->session->has_session()) {
                     WC()->session->set_customer_session_cookie(true);
@@ -30,7 +30,8 @@ add_action('template_redirect', function () {
 
             wp_safe_redirect(get_permalink(wc_get_page_id('shop')));
             exit;
-        } else if (preg_match('/([a-zA-Z0-9])\1{4,}/', $clean_search_term)) {
+        } else if (preg_match("/([\p{L}\p{N}'])\\1{3,}/u", $clean_search_term)) {
+            error_log("clean_search_term: " . $clean_search_term);
             if (WC()->session) {
                 if (! WC()->session->has_session()) {
                     WC()->session->set_customer_session_cookie(true);
