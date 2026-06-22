@@ -1,12 +1,3 @@
-/*
- Theme Name:   Custom Print Shop Child
- Description:  Child theme for custom layout changes.
- Author:       Tran Nguyen
- Template:     custom-print-shop
- Version:      1.0.0
- Text Domain:  custom-print-shop-child
-*/
-
 /* --- WooCommerce Cart and Checkout Enhancements --- */
 .woocommerce .shop_table {
   width: 100%;
@@ -52,7 +43,9 @@
   background: #f5f5f5;
 }
 
-.woocommerce-checkout-review-order-table .checkout-product-thumbnail-wrapper img {
+.woocommerce-checkout-review-order-table
+  .checkout-product-thumbnail-wrapper
+  img {
   width: 100%;
   height: 100%;
   object-fit: cover;

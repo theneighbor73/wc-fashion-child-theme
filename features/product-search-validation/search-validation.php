@@ -1,10 +1,13 @@
 <?php
 
-/**
- * Product Search Validation
- */
+/*
+|--------------------------------------------------------------------------
+| Logic
+|--------------------------------------------------------------------------
+*/
 
-add_action('template_redirect', function () {
+function cpsc_product_search_validation()
+{
     if (is_search()) {
         $raw_search_term = isset($_GET['s']) ? wp_unslash($_GET['s']) : '';
         $clean_search_term = trim($raw_search_term);
@@ -31,7 +34,6 @@ add_action('template_redirect', function () {
             wp_safe_redirect(get_permalink(wc_get_page_id('shop')));
             exit;
         } else if (preg_match("/([\p{L}\p{N}'])\\1{3,}/u", $clean_search_term)) {
-            error_log("clean_search_term: " . $clean_search_term);
             if (WC()->session) {
                 if (! WC()->session->has_session()) {
                     WC()->session->set_customer_session_cookie(true);
@@ -43,16 +45,19 @@ add_action('template_redirect', function () {
             exit;
         }
     }
-});
+};
+add_action('template_redirect', 'cpsc_product_search_validation');
 
-add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_script(
-        'product_search_validation_js',
-        get_theme_file_uri('inc/product-search-validation/js/frontend.js'),
-        [],
-        '20260621',
-        true
-    );
+/*
+|--------------------------------------------------------------------------
+| Asset Loading
+|--------------------------------------------------------------------------
+*/
+
+function cpsc_product_search_validation_assets()
+{
+
+    cpsc_enqueue_script('cpsc_product_search_validation_js', 'features/product-search-validation/search-validation.js', ['global_toast_js']);
 
     // Pass the data AFTER the redirect so that the toast can have data
     if (WC()->session && WC()->session->has_session()) {
@@ -60,14 +65,16 @@ add_action('wp_enqueue_scripts', function () {
 
         if ($error_message) {
             wp_localize_script(
-                'product_search_validation_js',
+                'cpsc_product_search_validation_js',
                 'backendToastError',
                 array(
                     'message' => $error_message
                 )
             );
+
             // Always clean up after
             WC()->session->set('product_search_validation', null);
         }
     }
-});
+}
+add_action('wp_enqueue_scripts', 'cpsc_product_search_validation_assets');
