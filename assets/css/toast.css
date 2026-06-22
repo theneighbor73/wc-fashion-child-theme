@@ -1,0 +1,36 @@
+/* --- Global Toast Notification Container --- */
+.custom-toast-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999999; /* Keeps it above everything else on the page */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none; /* Crucial: lets users click *through* empty space around the toast container */
+}
+
+/* --- Individual Toast Bubble Layout --- */
+.custom-toast {
+  background-color: #ff4757; /* Error Red */
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: auto; /* Restores click/tap interaction *only* on the actual bubble itself */
+
+  /* Animation hooks */
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Active status triggered by JavaScript */
+.custom-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}

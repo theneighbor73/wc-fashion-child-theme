@@ -1,0 +1,88 @@
+/* --- Desktop Layout Rules (Unchanged) --- */
+@media (min-width: 992px) {
+  .custom-print-shop-logo-wrapper {
+    display: flex;
+  }
+  .header-utility-icons {
+    display: none;
+  }
+}
+
+/* --- Mobile Specific 4-Column Layout --- */
+@media (max-width: 991.98px) {
+  /* 1. Main Parent Track: Disable wrapping entirely */
+  .custom-print-shop-logo-wrapper {
+    display: flex !important;
+    flex-direction: row;
+    flex: 1 1 0;
+    align-items: center; /* Centers all 4 columns vertically */
+    justify-content: center; /* order from left to right */
+    width: 100%;
+    padding: 0.25rem;
+    margin: 0;
+    gap: 0.75rem;
+    height: 2rem;
+  }
+
+  /* 2. Column 1: Hamburger (Strips the hidden 171.5px width container box) */
+  .custom-print-shop-logo-wrapper .toggle-menu.responsive-menu {
+    width: 44px; /*  shrinks the massive box to fit just the button */
+    max-width: 44px;
+    padding: 0;
+    flex-shrink: 0; /* Prevents compression */
+  }
+
+  .custom-print-shop-logo-wrapper .toggle-menu.responsive-menu button {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background: transparent;
+    border: 0;
+    font-size: 1rem;
+    line-height: 1;
+    width: 100%;
+    height: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* 3. Column 2: Logo Container */
+  .custom-print-shop-logo-wrapper .site-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+  }
+
+  /* .custom-print-shop-logo-wrapper .site-logo .custom-logo-link {
+    display: inline-flex;
+    align-items: center;
+  } */
+
+  .custom-print-shop-logo-wrapper .site-logo .custom-logo {
+    height: 42px; /* Keeps the crisp aspect ratio scaling */
+    width: auto;
+    max-width: 110px;
+    object-fit: contain;
+  }
+
+  /* 4. Column 4: Utility Icons (Column 3 is generated right here) */
+  .custom-print-shop-logo-wrapper .header-utility-icons {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1 1 0;
+    gap: 0.25rem;
+  }
+
+  .custom-print-shop-logo-wrapper .header-utility-icons span,
+  .custom-print-shop-logo-wrapper .header-utility-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 1rem;
+    margin-left: 10px !important;
+  }
+}

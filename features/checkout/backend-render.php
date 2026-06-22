@@ -1,6 +1,6 @@
 <?php
 
-function custom_print_shop_child_checkout_item_thumbnail($product_name, $cart_item, $cart_item_key)
+function cpsc_checkout_item_thumbnail($product_name, $cart_item, $cart_item_key)
 {
     if (! is_checkout() || is_order_received_page()) {
         return $product_name;
@@ -21,13 +21,19 @@ function custom_print_shop_child_checkout_item_thumbnail($product_name, $cart_it
         '<div class="checkout-product-name-wrapper">' . $product_name . '</div>' .
         '</div>';
 }
-add_filter('woocommerce_cart_item_name', 'custom_print_shop_child_checkout_item_thumbnail', 10, 3);
+add_filter('woocommerce_cart_item_name', 'cpsc_checkout_item_thumbnail', 10, 3);
 
-function custom_print_shop_child_order_review_heading($heading)
+function cpsc_order_review_heading($heading)
 {
     if (is_checkout() && ! is_order_received_page()) {
         return esc_html__('Order summary', 'custom-print-shop-child');
     }
     return $heading;
 }
-add_filter('woocommerce_order_review_heading', 'custom_print_shop_child_order_review_heading');
+
+add_filter('woocommerce_order_review_heading', 'cpsc_order_review_heading');
+
+// Enqueue assets
+
+// To-do later: only load on checkout page
+cpsc_enqueue_style('cpsc_checkout_css', '/features/checkout/checkout.css');
