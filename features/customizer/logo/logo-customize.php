@@ -1,6 +1,15 @@
 <?php
 
+function cpsc_get_logo_resize()
+{
+    return get_theme_mod(
+        'logo_resize',
+        CPSC_DEFAULT_LOGO_RESIZE
+    );
+}
+
 /**
+
  * Add Customizer registration for the logo ratio selector and logo width setting.
  *
  * @param WP_Customize_Manager $wp_customize Theme Customizer object.
@@ -31,8 +40,15 @@ function cpsc_logo_customize_register($wp_customize)
         'type'                 => 'theme_mod',
         'theme_supports'       => 'custom-logo',
         'transport'            => 'postMessage', // Use refresh if render on server side, postMessage if render on client side. 
-        'sanitize_callback'    => 'absint',
-        'sanitize_js_callback' => 'absint',
+        'sanitize_callback'    => function ($input) {
+            // Force input to an integer for strict type checking
+            $int_input = intval($input);
+
+            // Check if the integer matches any key inside CPSC_LOGO_RATIOS
+            if (array_key_exists($int_input, CPSC_LOGO_RATIOS)) {
+                return $int_input;
+            } else return 0;
+        },
     ));
 
     $wp_customize->add_control('logo_ratio', array(
