@@ -8,12 +8,16 @@
 
 function cpsc_logo_customize_register($wp_customize)
 {
-
     $logo_control = $wp_customize->get_control('custom_logo');
 
     if ($logo_control) {
         // Add a clear disclaimer description
-        $logo_control->description = __('Please upload only JPG or PNG images. SVG files will not resize correctly.', 'custom-print-shop');
+        $logo_control->description = esc_html__('Please upload only JPG or PNG images. SVG files will not resize correctly.', 'custom-print-shop');
+    }
+
+    $logo_setting = $wp_customize->get_setting('custom_logo');
+    if ($logo_setting) {
+        $logo_setting->transport = 'refresh'; // Fixes the removal freeze!
     }
 
     /*
@@ -89,12 +93,14 @@ function cpsc_logo_customize_register($wp_customize)
 
             'description' =>
             esc_html__(
-                '-100% to +100%. After saving, you may need to refresh homepage to double-check it logo is resized correctly and positioned properly.',
+                '-100% to +100%.',
                 'custom-print-shop'
             ),
 
             'section' =>
             'title_tagline',
+
+            'active_callback' => 'has_custom_logo',
 
             'priority' =>
             10,
