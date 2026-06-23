@@ -120,14 +120,17 @@
   api.bind("ready", function () {
     // OPTIMIZATION: Do not wrap this in $(window).on('load').
     // api.bind('ready') guarantees the DOM controls are already built in memory.
-    const currentRatio = parseInt(api("logo_ratio")(), 10);
-    const config = getLogoConfigByKey(currentRatio);
-    const currentScale = parseInt(api("logo_resize")(), 10);
+    const currentRatio = api("logo_ratio")?.() || 0;
+    const parsedCurrentRatio = parseInt(currentRatio, 10);
+    const config = getLogoConfigByKey(parsedCurrentRatio);
 
-    toggleLogoControl(currentRatio);
+    const currentScale = api("logo_resize")?.() || initialResize;
+    const parsedCurrentScale = parseInt(currentScale, 10);
+
+    toggleLogoControl(parsedCurrentRatio);
     applyLogoCropRatio(config);
     decorateLogoResizeControl();
-    applyLogoScale(currentScale);
+    applyLogoScale(parsedCurrentScale);
   });
 
   /**

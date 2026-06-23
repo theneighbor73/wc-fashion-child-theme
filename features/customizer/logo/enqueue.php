@@ -15,6 +15,8 @@ function cpsc_customizer_logo_controls()
             'defaultScale' => CPSC_DEFAULT_LOGO_RESIZE,
         ]
     );
+
+    cpsc_enqueue_style('cpsc_customizer_logo_controls_css', '/features/customizer/logo/customizer-style.css');
 };
 
 add_action(
@@ -31,13 +33,3 @@ function cpsc_customize_logo_preview()
 }
 
 add_action('customize_preview_init', 'cpsc_customize_logo_preview');
-
-/**
- * Enqueue styles specifically for the WordPress Customizer logo controls sidebar.
- */
-function cpsc_customizer_logo_controls_styles()
-{
-    cpsc_enqueue_style('cpsc_customizer_logo_controls_css', '/features/customizer/logo/customizer-style.css');
-}
-// This hook fires only when the Customizer admin panel layout is being built
-add_action('customize_controls_print_styles', 'cpsc_customizer_logo_controls_styles');
