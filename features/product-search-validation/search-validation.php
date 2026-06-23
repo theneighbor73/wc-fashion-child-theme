@@ -9,7 +9,7 @@
 function cpsc_product_search_validation()
 {
     if (is_search()) {
-        $raw_search_term = isset($_GET['s']) ? wp_unslash($_GET['s']) : '';
+        $raw_search_term = isset($_GET['s']) ? sanitize_text_field(wp_unslash($_GET['s'])) : '';
         $clean_search_term = trim($raw_search_term);
         $term_length = strlen($clean_search_term);
 

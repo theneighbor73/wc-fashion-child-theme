@@ -1,6 +1,7 @@
 <?php
 
 /**
+
  * Add Customizer registration for the logo ratio selector and logo width setting.
  *
  * @param WP_Customize_Manager $wp_customize Theme Customizer object.
@@ -13,7 +14,12 @@ function cpsc_logo_customize_register($wp_customize)
 
     if ($logo_control) {
         // Add a clear disclaimer description
-        $logo_control->description = __('Please upload only JPG or PNG images. SVG files will not resize correctly.', 'custom-print-shop');
+        $logo_control->description = esc_html__('Please upload only JPG or PNG images. SVG files will not resize correctly.', 'custom-print-shop');
+    }
+
+    $logo_setting = $wp_customize->get_setting('custom_logo');
+    if ($logo_setting) {
+        $logo_setting->transport = 'refresh'; // Fixes the removal freeze!
     }
 
     /*
@@ -27,8 +33,15 @@ function cpsc_logo_customize_register($wp_customize)
         'type'                 => 'theme_mod',
         'theme_supports'       => 'custom-logo',
         'transport'            => 'postMessage', // Use refresh if render on server side, postMessage if render on client side. 
-        'sanitize_callback'    => 'absint',
-        'sanitize_js_callback' => 'absint',
+        'sanitize_callback'    => function ($input) {
+            // Force input to an integer for strict type checking
+            $int_input = intval($input);
+
+            // Check if the integer matches any key inside CPSC_LOGO_RATIOS
+            if (array_key_exists($int_input, CPSC_LOGO_RATIOS)) {
+                return $int_input;
+            } else return 0;
+        },
     ));
 
     $wp_customize->add_control('logo_ratio', array(
@@ -66,13 +79,9 @@ function cpsc_logo_customize_register($wp_customize)
 
             'sanitize_callback' =>
             function ($value) {
-
                 return max(
                     -100,
-                    min(
-                        100,
-                        intval($value)
-                    )
+                    min(100, intval($value))
                 );
             },
         ]
@@ -89,19 +98,21 @@ function cpsc_logo_customize_register($wp_customize)
 
             'description' =>
             esc_html__(
-                '-100% to +100%. After saving, you may need to refresh homepage to double-check it logo is resized correctly and positioned properly.',
+                '-100% to +100%. Preview on the right only shows desktop view. For mobile view, please check on mobile.',
                 'custom-print-shop'
             ),
 
             'section' =>
             'title_tagline',
 
+            'active_callback' => 'has_custom_logo',
+
             'priority' =>
             10,
 
             'type' =>
             'range',
-
+            'settings'    => 'logo_resize',
             'input_attrs' => [
                 'min' => -100,
                 'max' => 100,
@@ -111,51 +122,15 @@ function cpsc_logo_customize_register($wp_customize)
     );
 }
 
-/**
- * Convert scale into multiplier.
- *
- * Example:
- * -30 → 0.7
- * 0 → 1
- * 50 → 1.5
- */
-function cpsc_logo_resize_to_multiplier(
-    $scale
-) {
-    $scale = max(
-        -100,
-        min(
-            100,
-            absint($scale)
-        )
-    );
-
-    return (
-        100 + $scale
-    ) / 100;
-}
-
 function cpsc_customize_logo_resize($html)
 {
-
     if (empty($html)) {
         return $html;
     }
 
-    $scale =
-        get_theme_mod(
-            'logo_resize',
-            0
-        );
-
-    $multiplier =
-        (
-            100 +
-            $scale
-        ) / 100;
+    $scale = get_theme_mod('logo_resize', CPSC_DEFAULT_LOGO_RESIZE);
 
     $custom_logo_id = get_theme_mod('custom_logo');
-    // set the short side minimum
 
     // don't use empty() because we can still use a 0
     if (is_numeric($scale) && is_numeric($custom_logo_id)) {
@@ -164,46 +139,6 @@ function cpsc_customize_logo_resize($html)
         $logo = wp_get_attachment_metadata($custom_logo_id);
         if (! $logo) return $html;
 
-        // get the logo support size
-        // $sizes = get_theme_support('custom-logo');
-
-        // // Check for max height and width, default to image sizes if none set in theme
-        // $max['height'] = isset($sizes[0]['height']) ? $sizes[0]['height'] : $logo['height'];
-        // $max['width'] = isset($sizes[0]['width']) ? $sizes[0]['width'] : $logo['width'];
-
-        // // landscape or square
-        // if ($logo['width'] >= $logo['height']) {
-        //     $output = custom_print_shop_min_max($logo['height'], $logo['width'], $max['height'], $max['width'], $size, $min);
-        //     $img = array(
-        //         'height'    => $output['short'],
-        //         'width'        => $output['long']
-        //     );
-        //     // portrait
-        // } else if ($logo['width'] < $logo['height']) {
-        //     $output = custom_print_shop_min_max($logo['width'], $logo['height'], $max['width'], $max['height'], $size, $min);
-        //     $img = array(
-        //         'height'    => $output['long'],
-        //         'width'        => $output['short']
-        //     );
-        // }
-
-        // add the CSS
-        //max-height: ' . $max['height'] . 'px;
-        //max-width: ' . $max['width'] . 'px;
-
-
-        // $css = '
-        // 	<style>
-        // 	.custom-logo {
-        // 		height: ' . $logo['height'] . 'px;
-        // 		width: ' . $logo['width'] . 'px;
-        // 		transform: scale(' . $multiplier . ');
-        // 		transform-origin: left center;
-        // 	}
-        // 	</style>';
-
-        // $html = $css . $html;
-
         if ($logo && isset($logo['width'], $logo['height'])) {
 
             // Calculate the actual new dimensions instead of using CSS transform
@@ -211,14 +146,13 @@ function cpsc_customize_logo_resize($html)
             $new_width  = round($logo['width'] * $multiplier);
             $new_height = round($logo['height'] * $multiplier);
 
-            // Inject inline styles affecting actual max-width/height to preserve layout flow
-            $css = sprintf(
-                '<style>
+            // It affects the desktop display
+            $css = '<style>
                     .site-logo {
                         display: flex;
                         justify-content: center;
                         align-items: center;
-                        width: 100%%;
+                        width: 100%;
                     }
                     .custom-logo-link {
                         display: inline-flex;
@@ -227,20 +161,17 @@ function cpsc_customize_logo_resize($html)
                         margin-left: auto;
                         margin-right: auto;
                     }
-
                     .custom-logo {
                         height: ' . $new_height . 'px;
                         width: ' . $new_width . 'px;
-                        max-width: 100%%;
+                        max-width: 100%;
                         display: block;
                         margin: 0 auto;
                     }
-                </style>',
-                $new_width,
-                $new_height
-            );
+                </style>';
 
-            $html = $css . $html;
+
+            $html .= $css;
         }
     }
 
