@@ -53,10 +53,7 @@ function cpsc_logo_customize_register($wp_customize)
         'settings'    => 'logo_ratio',
         'choices' => [
             0 => '— Select a Ratio —',
-        ] + array_map(
-            fn($ratio_data) => $ratio_data['css'],
-            CPSC_LOGO_RATIOS
-        ),
+        ] + array_map(fn($ratio_data) => $ratio_data['label'], CPSC_LOGO_RATIOS),
     ));
 
     /*
@@ -79,10 +76,7 @@ function cpsc_logo_customize_register($wp_customize)
 
             'sanitize_callback' =>
             function ($value) {
-                return max(
-                    -100,
-                    min(100, intval($value))
-                );
+                return max(-99, min(100, intval($value)));
             },
         ]
     );
@@ -114,9 +108,9 @@ function cpsc_logo_customize_register($wp_customize)
             'range',
             'settings'    => 'logo_resize',
             'input_attrs' => [
-                'min' => -100,
+                'min' => -99, // because (100 - 100)/100 is not possible
                 'max' => 100,
-                'step' => 5,
+                'step' => 1, // Because 199 is a prime number 
             ],
         ]
     );
@@ -129,6 +123,7 @@ function cpsc_customize_logo_resize($html)
     }
 
     $scale = get_theme_mod('logo_resize', CPSC_DEFAULT_LOGO_RESIZE);
+    cpsc_debug_logger($scale, 'logo_resize');
 
     $custom_logo_id = get_theme_mod('custom_logo');
 

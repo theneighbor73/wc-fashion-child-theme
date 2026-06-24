@@ -10,7 +10,7 @@
   "use strict";
 
   var api = wp.customize;
-  const initialRatioConfig = customPrintShopConfig?.logoRatios || {};
+  const initialRatioConfig = customPrintShopConfig?.logoRatios ?? {};
   const initialResize = customPrintShopConfig?.defaultScale ?? 0;
 
   function getLogoConfigByKey(key) {
@@ -120,11 +120,11 @@
   api.bind("ready", function () {
     // OPTIMIZATION: Do not wrap this in $(window).on('load').
     // api.bind('ready') guarantees the DOM controls are already built in memory.
-    const currentRatio = api("logo_ratio")?.() || 0;
+    const currentRatio = api("logo_ratio")?.() ?? 0;
     const parsedCurrentRatio = parseInt(currentRatio, 10);
     const config = getLogoConfigByKey(parsedCurrentRatio);
 
-    const currentScale = api("logo_resize")?.() || initialResize;
+    const currentScale = api("logo_resize")?.() ?? initialResize;
     const parsedCurrentScale = parseInt(currentScale, 10);
 
     toggleLogoControl(parsedCurrentRatio);

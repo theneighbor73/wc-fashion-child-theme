@@ -17,27 +17,23 @@ const CPSC_DEFAULT_LOGO_RESIZE = 0;
 // For logo ratio setting customization feature
 const CPSC_LOGO_RATIOS = [
     20 => [
-        'label'  => '2:1',
+        'label'  => '2 : 1',
         'width'  => 200,
         'height' => 100,
-        'css'    => '2 : 1',
     ],
     30 => [
-        'label'  => '3:1',
+        'label'  => '3 : 1',
         'width'  => 300,
         'height' => 100,
-        'css'    => '3 : 1',
     ],
     40 => [
-        'label'  => '4:1',
+        'label'  => '4 : 1',
         'width'  => 400,
         'height' => 100,
-        'css'    => '4 : 1',
     ],
     53 => [
-        'label'  => '5:3',
+        'label'  => '5 : 3',
         'width'  => 250,
         'height' => 150,
-        'css'    => '5 : 3',
     ],
 ];

@@ -5,20 +5,16 @@
     return;
   }
 
+  const initialResize = customPrintShopConfig?.defaultScale ?? 0;
+
   function applyLogoScaleToPreview(scale) {
-    scale = Math.max(-100, Math.min(100, parseInt(scale, 10) || 0));
+    scale = Math.max(-99, Math.min(100, parseInt(scale, 10) || initialResize));
     var multiplier = (100 + scale) / 100;
     var logo = document.querySelector(".custom-logo");
 
     if (!logo) {
+      console.error("Logo not found.");
       return;
-    }
-
-    if (logo.tagName === "A") {
-      var imgInside = logo.querySelector("img");
-      if (imgInside) {
-        logo = imgInside;
-      }
     }
 
     var logoWrapper = logo.parentElement;
@@ -74,26 +70,7 @@
   });
 
   wp.customize.bind("preview-ready", function () {
-    var current = wp.customize("logo_resize")();
+    var current = wp.customize("logo_resize")?.() ?? initialResize;
     applyLogoScaleToPreview(current);
-  });
-})();
-
-/**
- * Core Blueprint File: design-preview.js
- * Enqueued via: add_action('customize_preview_init', ...)
- */
-(function () {
-  // 1. Hook into the specific theme option setting ID
-  wp.customize("_customize-input-logo_resize", function (value) {
-    // 2. Bind a listener event to catch changes on-the-fly
-    value.bind(function (newval) {
-      const logoImage = document.querySelector(".site-logo img");
-
-      // 3. Prevent null pointer crashes safely
-      if (logoImage) {
-        logoImage.style.width = newval + "px";
-      }
-    });
   });
 })();

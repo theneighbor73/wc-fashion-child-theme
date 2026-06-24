@@ -30,6 +30,14 @@ add_action(
 function cpsc_customize_logo_preview()
 {
     cpsc_enqueue_script('cpsc_customizer_logo_preview_js', '/features/customizer/logo/customizer-preview.js', array('customize-preview'));
+
+    wp_localize_script(
+        'cpsc_customizer_logo_preview_js',
+        'customPrintShopConfig',
+        [
+            'defaultScale' => CPSC_DEFAULT_LOGO_RESIZE,
+        ]
+    );
 }
 
 add_action('customize_preview_init', 'cpsc_customize_logo_preview');
