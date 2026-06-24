@@ -144,23 +144,14 @@ function cpsc_customize_logo_resize($html)
             // It affects the desktop display
             $css = '<style>
                     .site-logo {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        width: 100%;
-                    }
-                    .custom-logo-link {
                         display: inline-flex;
                         justify-content: center;
                         align-items: center;
-                        margin-left: auto;
-                        margin-right: auto;
                     }
                     .custom-logo {
                         height: ' . $new_height . 'px;
                         width: ' . $new_width . 'px;
                         max-width: 100%;
-                        display: block;
                         margin: 0 auto;
                     }
                 </style>';
