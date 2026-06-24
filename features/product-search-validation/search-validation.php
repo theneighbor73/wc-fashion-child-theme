@@ -66,7 +66,7 @@ function cpsc_product_search_validation_assets()
         if ($error_message) {
             wp_localize_script(
                 'cpsc_product_search_validation_js',
-                'backendToastError',
+                'cpsc_backendToastError',
                 array(
                     'message' => $error_message
                 )
