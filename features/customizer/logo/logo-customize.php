@@ -19,7 +19,7 @@ if (class_exists('WP_Customize_Control') && ! class_exists('CPSC_Customize_Logo_
             }
 
             if (! empty($this->description)) {
-                echo '<span class="customize-control-description">' . wp_kses_post($this->description) . '</span>';
+                echo '<span class=" description customize-control-description">' . esc_html($this->description) . '</span>';
             }
 
             $input_attrs = '';

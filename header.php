@@ -24,6 +24,7 @@
     } else {
         do_action('wp_body_open');
     } ?>
+    <div class="custom-toast-container" aria-live="polite" aria-atomic="true"></div>
     <?php if (get_theme_mod('custom_print_shop_preloader_hide', false) != '' || get_theme_mod('custom_print_shop_responsive_preloader_hide', false) != '') { ?>
         <?php if (get_theme_mod('custom_print_shop_preloader_type', 'center-square') == 'center-square') { ?>
             <div class='preloader'>
