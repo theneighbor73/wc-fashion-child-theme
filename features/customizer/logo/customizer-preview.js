@@ -45,7 +45,6 @@
     var baseHeight = logo.naturalHeight ?? logo.height;
 
     var scaleWidthInProportion = maxLogoHeight / baseHeight;
-    console.log("scaleWidthInProportion", scaleWidthInProportion);
     var allowedWidth = Math.round(scaleWidthInProportion * baseWidth);
 
     // Calculate the new layout sizes just like the PHP side does
