@@ -31,6 +31,7 @@ function cpsc_customize_logo_preview()
 {
     cpsc_enqueue_script('cpsc_customizer_logo_preview_js', '/features/customizer/logo/customizer-preview.js', array('customize-preview'));
 
+    // pass via global variable later
     wp_localize_script(
         'cpsc_customizer_logo_preview_js',
         'customPrintShopConfig',

@@ -72,38 +72,24 @@
     );
   }
 
-  function decorateLogoResizeControl(attempts) {
-    attempts = typeof attempts === "number" ? attempts : 0;
+  function decorateLogoResizeControl() {
     const control = getLogoResizeControl();
 
     if (!control) {
-      if (attempts < 4) {
-        window.setTimeout(function () {
-          decorateLogoResizeControl(attempts + 1);
-        }, 120);
-      }
+      console.error("Logo Resize Control not found.");
       return;
     }
 
     if (control.querySelector(".custom-logo-resize-footer")) {
-      return;
-    }
-
-    const footer = document.createElement("div");
-    footer.className = "custom-logo-resize-footer";
-    footer.innerHTML =
-      '<div class="logo-resize-markers"><span>-100</span><span>0</span><span>+100</span></div>' +
-      '<button type="button" class="button logo-resize-reset">Reset</button>';
-
-    control.appendChild(footer);
-
-    const resetButton = footer.querySelector(".logo-resize-reset");
-    if (resetButton) {
-      resetButton.addEventListener("click", function () {
-        if (api("logo_resize")) {
-          api("logo_resize").set(initialResize);
-        }
-      });
+      const footer = control.querySelector(".custom-logo-resize-footer");
+      const resetButton = footer.querySelector(".logo-resize-reset");
+      if (resetButton) {
+        resetButton.addEventListener("click", function () {
+          if (api("logo_resize")) {
+            api("logo_resize").set(initialResize);
+          }
+        });
+      }
     }
   }
 

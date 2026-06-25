@@ -7,6 +7,39 @@
  * @param WP_Customize_Manager $wp_customize Theme Customizer object.
  */
 
+if (class_exists('WP_Customize_Control') && ! class_exists('CPSC_Customize_Logo_Resize_Control')) {
+    class CPSC_Customize_Logo_Resize_Control extends WP_Customize_Control
+    {
+        public $type = 'range';
+
+        public function render_content()
+        {
+            if (! empty($this->label)) {
+                echo '<span class="customize-control-title">' . esc_html($this->label) . '</span>';
+            }
+
+            if (! empty($this->description)) {
+                echo '<span class="customize-control-description">' . wp_kses_post($this->description) . '</span>';
+            }
+
+            $input_attrs = '';
+            foreach ($this->input_attrs as $attr => $value) {
+                $input_attrs .= sprintf(' %s="%s"', esc_attr($attr), esc_attr($value));
+            }
+
+            printf(
+                '<input id="%s" type="range" value="%s" %s %s />',
+                esc_attr('_customize-input-' . $this->id),
+                esc_attr($this->value()),
+                $this->get_link(),
+                $input_attrs
+            );
+
+            echo '<div class="custom-logo-resize-footer"><div class="logo-resize-markers"><span>-100</span><span>0</span><span>+100</span></div><button type="button" class="button logo-resize-reset">' . esc_html__('Reset', 'custom-print-shop') . '</button></div>';
+        }
+    }
+}
+
 function cpsc_logo_customize_register($wp_customize)
 {
 
@@ -82,37 +115,24 @@ function cpsc_logo_customize_register($wp_customize)
     );
 
     $wp_customize->add_control(
-        'logo_resize',
-        [
-            'label' =>
-            esc_html__(
-                'Logo Resize',
-                'custom-print-shop'
-            ),
-
-            'description' =>
-            esc_html__(
-                '-100% to +100%. Preview on the right only shows desktop view. For mobile view, please check on mobile.',
-                'custom-print-shop'
-            ),
-
-            'section' =>
-            'title_tagline',
-
-            'active_callback' => 'has_custom_logo',
-
-            'priority' =>
-            10,
-
-            'type' =>
-            'range',
-            'settings'    => 'logo_resize',
-            'input_attrs' => [
-                'min' => -99, // because (100 - 100)/100 is not possible
-                'max' => 100,
-                'step' => 1, // Because 199 is a prime number 
-            ],
-        ]
+        new CPSC_Customize_Logo_Resize_Control(
+            $wp_customize,
+            'logo_resize',
+            [
+                'label' => esc_html__('Logo Resize', 'custom-print-shop'),
+                'description' => esc_html__('-100% to +100%. Preview on the right only shows desktop view. For mobile view, please check on mobile.', 'custom-print-shop'),
+                'section' => 'title_tagline',
+                'active_callback' => 'has_custom_logo',
+                'priority' => 10,
+                'type' => 'range',
+                'settings' => 'logo_resize',
+                'input_attrs' => [
+                    'min' => -99, // because (100 - 100)/100 is not possible
+                    'max' => 100,
+                    'step' => 1, // Because 199 is a prime number
+                ],
+            ]
+        )
     );
 }
 
