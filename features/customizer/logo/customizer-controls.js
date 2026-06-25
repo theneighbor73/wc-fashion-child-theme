@@ -9,12 +9,23 @@
 (function ($) {
   "use strict";
 
+  if (typeof wp === "undefined" || !wp.customize) {
+    console.error("WP Customizer API not found.");
+    return;
+  }
+
   var api = wp.customize;
-  const initialRatioConfig = customPrintShopConfig?.logoRatios ?? {};
-  const initialResize = customPrintShopConfig?.defaultScale ?? 0;
+  const initialRatioConfig =
+    typeof customPrintShopConfig !== "undefined"
+      ? customPrintShopConfig?.logoRatios
+      : {};
+  const initialResize =
+    typeof customPrintShopConfig !== "undefined"
+      ? customPrintShopConfig?.defaultScale
+      : 0;
 
   function getLogoConfigByKey(key) {
-    return initialRatioConfig[key] || null;
+    return initialRatioConfig[key] ?? null;
   }
 
   /**
@@ -49,23 +60,6 @@
       logoControl.params.width = config.width;
       logoControl.params.height = config.height;
     }
-  }
-
-  /**
-   * Apply visual scale.
-   *
-   * @param {number} scale
-   */
-  function applyLogoScale(scale) {
-    scale = Math.max(-100, Math.min(100, scale));
-
-    const multiplier = (100 + scale) / 100;
-
-    $(".custom-logo").css({
-      transform: `scale(${multiplier})`,
-
-      transformOrigin: "left center",
-    });
   }
 
   function getLogoResizeControl() {
@@ -118,19 +112,13 @@
    */
 
   api.bind("ready", function () {
-    // OPTIMIZATION: Do not wrap this in $(window).on('load').
-    // api.bind('ready') guarantees the DOM controls are already built in memory.
     const currentRatio = api("logo_ratio")?.() ?? 0;
     const parsedCurrentRatio = parseInt(currentRatio, 10);
     const config = getLogoConfigByKey(parsedCurrentRatio);
 
-    const currentScale = api("logo_resize")?.() ?? initialResize;
-    const parsedCurrentScale = parseInt(currentScale, 10);
-
     toggleLogoControl(parsedCurrentRatio);
     applyLogoCropRatio(config);
     decorateLogoResizeControl();
-    applyLogoScale(parsedCurrentScale);
   });
 
   /**
@@ -146,17 +134,5 @@
       toggleLogoControl(newRatio);
       applyLogoCropRatio(config);
     });
-
-    api(
-      "logo_resize",
-
-      function (value) {
-        value.bind(function (newScale) {
-          newScale = parseInt(newScale, 10);
-
-          applyLogoScale(newScale);
-        });
-      },
-    );
   });
 })(jQuery);
