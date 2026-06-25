@@ -37,6 +37,7 @@ function cpsc_customize_logo_preview()
         'customPrintShopConfig',
         [
             'defaultScale' => CPSC_DEFAULT_LOGO_RESIZE,
+            'desktopLogoMaxHeight' => CPSC_DESKTOP_HEADER_LOGO_MAX_HEIGHT,
         ]
     );
 }

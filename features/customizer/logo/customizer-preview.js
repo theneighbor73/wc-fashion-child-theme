@@ -5,10 +5,16 @@
     return;
   }
 
-  const initialResize =
-    typeof customPrintShopConfig !== "undefined"
-      ? customPrintShopConfig?.defaultScale
-      : 0;
+  let initialResize;
+  let maxLogoHeight;
+
+  if (typeof customPrintShopConfig !== "undefined") {
+    const initialResize = customPrintShopConfig.defaultScale;
+    const maxLogoHeight = customPrintShopConfig.desktopLogoMaxHeight;
+  } else {
+    const initialResize = 0;
+    const maxLogoHeight = 46;
+  }
 
   function applyLogoScaleToPreview(scale) {
     scale = Math.max(-99, Math.min(100, parseInt(scale, 10) || initialResize));
@@ -38,6 +44,10 @@
     var baseWidth = logo.naturalWidth ?? logo.width;
     var baseHeight = logo.naturalHeight ?? logo.height;
 
+    var scaleWidthInProportion = maxLogoHeight / baseHeight;
+    console.log("scaleWidthInProportion", scaleWidthInProportion);
+    var allowedWidth = Math.round(scaleWidthInProportion * baseWidth);
+
     // Calculate the new layout sizes just like the PHP side does
     var newWidth = Math.round(baseWidth * multiplier);
     var newHeight = Math.round(baseHeight * multiplier);
@@ -50,7 +60,8 @@
     // 2. Apply rules to the <img> element
     logo.style.setProperty("width", newWidth + "px");
     logo.style.setProperty("height", newHeight + "px");
-    logo.style.setProperty("max-width", "100%");
+    logo.style.setProperty("max-width", allowedWidth + "px");
+    logo.style.setProperty("max-height", maxLogoHeight + "px");
     logo.style.setProperty("margin", "0 auto");
 
     // Smooth transition effect
