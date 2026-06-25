@@ -37,3 +37,6 @@ const CPSC_LOGO_RATIOS = [
         'height' => 150,
     ],
 ];
+
+// Desktop view logo in header max height
+const CPSC_DESKTOP_HEADER_LOGO_MAX_HEIGHT = 46; //px

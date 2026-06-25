@@ -14,28 +14,49 @@ if (class_exists('WP_Customize_Control') && ! class_exists('CPSC_Customize_Logo_
 
         public function render_content()
         {
-            if (! empty($this->label)) {
-                echo '<span class="customize-control-title">' . esc_html($this->label) . '</span>';
-            }
-
-            if (! empty($this->description)) {
-                echo '<span class=" description customize-control-description">' . esc_html($this->description) . '</span>';
-            }
-
             $input_attrs = '';
+
             foreach ($this->input_attrs as $attr => $value) {
-                $input_attrs .= sprintf(' %s="%s"', esc_attr($attr), esc_attr($value));
+                $input_attrs .= sprintf(
+                    ' %s="%s"',
+                    esc_attr($attr),
+                    esc_attr($value)
+                );
             }
+?>
+            <?php if (! empty($this->label)) : ?>
+                <span class="customize-control-title">
+                    <?php echo esc_html($this->label); ?>
+                </span>
+            <?php endif; ?>
 
-            printf(
-                '<input id="%s" type="range" value="%s" %s %s />',
-                esc_attr('_customize-input-' . $this->id),
-                esc_attr($this->value()),
-                $this->get_link(),
-                $input_attrs
-            );
+            <?php if (! empty($this->description)) : ?>
+                <span class="description customize-control-description">
+                    <?php echo esc_html($this->description); ?>
+                </span>
+            <?php endif; ?>
 
-            echo '<div class="custom-logo-resize-footer"><div class="logo-resize-markers"><span>-100</span><span>0</span><span>+100</span></div><button type="button" class="button logo-resize-reset">' . esc_html__('Reset', 'custom-print-shop') . '</button></div>';
+            <input
+                id="<?php echo esc_attr('_customize-input-' . $this->id); ?>"
+                type="range"
+                value="<?php echo esc_attr($this->value()); ?>"
+                <?php echo $this->get_link(); ?>
+                <?php echo $input_attrs; ?>>
+
+            <div class="custom-logo-resize-footer">
+                <div class="logo-resize-markers">
+                    <span>-100</span>
+                    <span>0</span>
+                    <span>+100</span>
+                </div>
+
+                <button
+                    type="button"
+                    class="button logo-resize-reset">
+                    <?php esc_html_e('Reset', 'custom-print-shop'); ?>
+                </button>
+            </div>
+<?php
         }
     }
 }
@@ -120,7 +141,8 @@ function cpsc_logo_customize_register($wp_customize)
             'logo_resize',
             [
                 'label' => esc_html__('Logo Resize', 'custom-print-shop'),
-                'description' => esc_html__('-100% to +100%. Preview on the right only shows desktop view. For mobile view, please check on mobile.', 'custom-print-shop'),
+                'description' => esc_html__('-100% to +100%. Preview on the right only shows desktop view. For mobile view, please check on mobile. 
+                Max height allowed: ' . CPSC_DESKTOP_HEADER_LOGO_MAX_HEIGHT . 'px', 'custom-print-shop'),
                 'section' => 'title_tagline',
                 'active_callback' => 'has_custom_logo',
                 'priority' => 10,
@@ -161,6 +183,9 @@ function cpsc_customize_logo_resize($html)
             $new_width  = round($logo['width'] * $multiplier);
             $new_height = round($logo['height'] * $multiplier);
 
+            $scale_width_in_proportion_with_max_height = CPSC_DESKTOP_HEADER_LOGO_MAX_HEIGHT / $logo['height'];
+            $allowed_max_width = round($logo['width'] * $scale_width_in_proportion_with_max_height);
+
             // It affects the desktop display
             $css = '<style>
                     .site-logo {
@@ -171,7 +196,8 @@ function cpsc_customize_logo_resize($html)
                     .custom-logo {
                         height: ' . $new_height . 'px;
                         width: ' . $new_width . 'px;
-                        max-width: 100%;
+                        max-width: ' . $allowed_max_width . 'px;
+                        max-height: ' . CPSC_DESKTOP_HEADER_LOGO_MAX_HEIGHT . 'px;
                         margin: 0 auto;
                     }
                 </style>';
