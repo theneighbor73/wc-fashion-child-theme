@@ -18,7 +18,7 @@ function cpsc_product_search_validation()
                 if (! WC()->session->has_session()) {
                     WC()->session->set_customer_session_cookie(true);
                 }
-                WC()->session->set('product_search_validation', 'Search terms must be at least 3 characters long.');
+                WC()->session->set('cpsc_product_search_validation', 'Search terms must be at least 3 characters long.');
             }
 
             wp_safe_redirect(get_permalink(wc_get_page_id('shop')));
@@ -28,7 +28,7 @@ function cpsc_product_search_validation()
                 if (! WC()->session->has_session()) {
                     WC()->session->set_customer_session_cookie(true);
                 }
-                WC()->session->set('product_search_validation', 'Search terms cannot contain special characters.');
+                WC()->session->set('cpsc_product_search_validation', 'Search terms cannot contain special characters.');
             }
 
             wp_safe_redirect(get_permalink(wc_get_page_id('shop')));
@@ -38,7 +38,7 @@ function cpsc_product_search_validation()
                 if (! WC()->session->has_session()) {
                     WC()->session->set_customer_session_cookie(true);
                 }
-                WC()->session->set('product_search_validation', 'Invalid search terms. Please try again.');
+                WC()->session->set('cpsc_product_search_validation', 'Invalid search terms. Please try again.');
             }
 
             wp_safe_redirect(get_permalink(wc_get_page_id('shop')));
@@ -61,19 +61,19 @@ function cpsc_product_search_validation_assets()
 
     // Pass the data AFTER the redirect so that the toast can have data
     if (WC()->session && WC()->session->has_session()) {
-        $error_message = WC()->session->get('product_search_validation');
+        $error_message = WC()->session->get('cpsc_product_search_validation');
 
         if ($error_message) {
             wp_localize_script(
                 'cpsc_product_search_validation_js',
-                'backendToastError',
+                'cpsc_backendToastError',
                 array(
                     'message' => $error_message
                 )
             );
 
             // Always clean up after
-            WC()->session->set('product_search_validation', null);
+            WC()->session->set('cpsc_product_search_validation', null);
         }
     }
 }

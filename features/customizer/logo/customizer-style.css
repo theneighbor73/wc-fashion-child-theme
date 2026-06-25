@@ -1,5 +1,4 @@
 /* For Customizer controls */
-/* Loaded into the Customizer controls frame via customize_controls_print_styles hook */
 
 .custom-logo-resize-footer {
   margin-top: 0.05rem;
@@ -45,6 +44,7 @@
   width: 93%;
   background: transparent;
   margin: 0.3rem auto;
+  margin-top: 0.75rem;
   display: block;
 }
 
