@@ -1,17 +1,8 @@
 (function () {
   "use strict";
 
-  // Keeps the container tracking variable isolated within this script's scope
-  let outerToast = null;
-
   document.addEventListener("DOMContentLoaded", () => {
     outerToast = document.querySelector(".custom-toast-container");
-
-    if (!outerToast) {
-      outerToast = document.createElement("div");
-      outerToast.className = "custom-toast-container";
-      document.body.appendChild(outerToast);
-    }
   });
 
   /**
