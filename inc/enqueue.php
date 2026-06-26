@@ -51,9 +51,17 @@ function cpsc_enqueue_global_assets()
     |--------------------------------------------------------------------------
     */
 
+    /*
+     * Global
+     */
+
     cpsc_enqueue_style('cpsc_header_css', 'assets/css/header.css');
 
     cpsc_enqueue_style('cpsc_toast_css', 'assets/css/toast.css');
+
+    /*
+     * Woocommerce
+     */
 
     cpsc_enqueue_style('cpsc_wc_base_css', '/woocommerce/css/base.css');
 
@@ -69,6 +77,10 @@ function cpsc_enqueue_global_assets()
     | Scripts
     |--------------------------------------------------------------------------
     */
+
+    /*
+     * Global
+     */
 
     cpsc_enqueue_script('global_toast_js', 'assets/js/toast.js');
 }
