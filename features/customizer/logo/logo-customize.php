@@ -14,10 +14,10 @@ if (class_exists('WP_Customize_Control') && ! class_exists('CPSC_Customize_Logo_
 
         public function render_content()
         {
-            $input_attrs = '';
+            $input_attrs_html = '';
 
             foreach ($this->input_attrs as $attr => $value) {
-                $input_attrs .= sprintf(
+                $input_attrs_html .= sprintf(
                     ' %s="%s"',
                     esc_attr($attr),
                     esc_attr($value)
@@ -41,7 +41,7 @@ if (class_exists('WP_Customize_Control') && ! class_exists('CPSC_Customize_Logo_
                 type="range"
                 value="<?php echo esc_attr($this->value()); ?>"
                 <?php echo $this->get_link(); ?>
-                <?php echo $input_attrs; ?>>
+                <?php echo $input_attrs_html; ?>>
 
             <div class="custom-logo-resize-footer">
                 <div class="logo-resize-markers">
@@ -165,7 +165,6 @@ function cpsc_customize_logo_resize($html)
     }
 
     $scale = get_theme_mod('logo_resize', CPSC_DEFAULT_LOGO_RESIZE);
-    cpsc_debug_logger($scale, 'logo_resize');
 
     $custom_logo_id = get_theme_mod('custom_logo');
 

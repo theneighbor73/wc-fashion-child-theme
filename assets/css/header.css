@@ -6,6 +6,11 @@
   .header-utility-icons {
     display: none;
   }
+  .woocommerce .site-logo img,
+  .woocommerce-page .site-logo img {
+    width: auto;
+    height: auto;
+  }
 }
 
 /* --- Mobile Specific 4-Column Layout --- */

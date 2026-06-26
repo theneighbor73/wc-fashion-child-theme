@@ -8,8 +8,8 @@
 
     // Helper to safely call your global toast system
     const triggerToast = (msg) => {
-      if (typeof window.cpsc_showToastMessage === "function") {
-        window.cpsc_showToastMessage(msg);
+      if (typeof window.showToastMessage === "function") {
+        window.showToastMessage(msg);
       } else {
         console.warn("Toast system not loaded yet:", msg);
       }
@@ -17,10 +17,10 @@
 
     // Show toast passed down from backend if any exists in global scope
     if (
-      typeof window.cpsc_backendToastError !== "undefined" &&
-      typeof window.cpsc_backendToastError.message === "string"
+      typeof window.backendToastError !== "undefined" &&
+      typeof window.backendToastError.message === "string"
     ) {
-      triggerToast(window.cpsc_backendToastError.message);
+      triggerToast(window.backendToastError.message);
     }
 
     // Process frontend form constraints

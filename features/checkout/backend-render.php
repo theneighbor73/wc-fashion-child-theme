@@ -26,7 +26,7 @@ add_filter('woocommerce_cart_item_name', 'cpsc_checkout_item_thumbnail', 10, 3);
 function cpsc_order_review_heading($heading)
 {
     if (is_checkout() && ! is_order_received_page()) {
-        return esc_html__('Order summary', 'custom-print-shop-child');
+        return esc_html__('Order summary', 'custom-print-shop');
     }
     return $heading;
 }

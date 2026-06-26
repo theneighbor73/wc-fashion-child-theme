@@ -22,11 +22,16 @@ function cpsc_initial_styling()
         esc_url(get_template_directory_uri()) . '/style.css',
         array()
     );
-    wp_enqueue_style(
-        PARENT_STYLE_HANDLE,
-        esc_url(get_template_directory_uri()) . '/style.css',
-        array()
-    );
+
+    wp_enqueue_style(PARENT_STYLE_HANDLE);
+
+    if (is_rtl()) {
+        wp_enqueue_style(
+            'custom-print-shop-rtl',
+            get_template_directory_uri() . '/rtl.css',
+            array(PARENT_STYLE_HANDLE)
+        );
+    }
 
     // Load child style
     wp_enqueue_style(
