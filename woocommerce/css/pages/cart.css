@@ -1,0 +1,15 @@
+.woocommerce-cart-form .cart-collaterals {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 1.5rem;
+}
+
+.woocommerce-cart-form .cart_totals {
+  width: 100%;
+  max-width: 430px;
+}
+
+.woocommerce .wc-proceed-to-checkout {
+  margin-top: 1rem;
+}

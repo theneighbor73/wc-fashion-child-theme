@@ -32,14 +32,3 @@ function cpsc_order_review_heading($heading)
 }
 
 add_filter('woocommerce_order_review_heading', 'cpsc_order_review_heading');
-
-// Enqueue assets
-
-function cpsc_checkout_page_css()
-{
-    if (is_checkout() || is_cart()) {
-        cpsc_enqueue_style('cpsc_checkout_css', '/features/checkout/checkout.css');
-    }
-}
-
-add_action('wp_enqueue_scripts', 'cpsc_checkout_page_css');

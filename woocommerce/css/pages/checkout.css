@@ -1,0 +1,25 @@
+.woocommerce-checkout .woocommerce-checkout-review-order-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.woocommerce-checkout-review-order-table thead th {
+  background: #d71d46;
+  color: #fff;
+}
+
+.woocommerce #payment .payment_methods li {
+  margin-bottom: 0.85rem;
+}
+
+.woocommerce #payment .payment_methods li label {
+  display: block;
+  background: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+}

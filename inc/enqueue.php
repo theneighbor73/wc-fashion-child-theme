@@ -25,14 +25,6 @@ function cpsc_initial_styling()
 
     wp_enqueue_style(PARENT_STYLE_HANDLE);
 
-    if (is_rtl()) {
-        wp_enqueue_style(
-            'custom-print-shop-rtl',
-            get_template_directory_uri() . '/rtl.css',
-            array(PARENT_STYLE_HANDLE)
-        );
-    }
-
     // Load child style
     wp_enqueue_style(
         CHILD_STYLE_HANDLE,
@@ -59,15 +51,18 @@ function cpsc_enqueue_global_assets()
     |--------------------------------------------------------------------------
     */
 
-    cpsc_enqueue_style(
-        'cpsc_header_css',
-        'assets/css/header.css'
-    );
+    cpsc_enqueue_style('cpsc_header_css', 'assets/css/header.css');
 
-    cpsc_enqueue_style(
-        'cpsc_toast_css',
-        'assets/css/toast.css'
-    );
+    cpsc_enqueue_style('cpsc_toast_css', 'assets/css/toast.css');
+
+    cpsc_enqueue_style('cpsc_wc_base_css', '/woocommerce/css/base.css');
+
+    if (is_checkout()) {
+        cpsc_enqueue_style('cpsc_checkout_css', '/woocommerce/css/pages/checkout.css');
+    }
+    if (is_cart()) {
+        cpsc_enqueue_style('cpsc_checkout_css', '/woocommerce/css/pages/cart.css');
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -75,10 +70,7 @@ function cpsc_enqueue_global_assets()
     |--------------------------------------------------------------------------
     */
 
-    cpsc_enqueue_script(
-        'global_toast_js',
-        'assets/js/toast.js'
-    );
+    cpsc_enqueue_script('global_toast_js', 'assets/js/toast.js');
 }
 
 add_action(
