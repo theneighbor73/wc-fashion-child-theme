@@ -8,8 +8,8 @@
 
     // Helper to safely call your global toast system
     const triggerToast = (msg) => {
-      if (typeof window.showToastMessage === "function") {
-        window.showToastMessage(msg);
+      if (typeof window.cpsc_showToastMessage === "function") {
+        window.cpsc_showToastMessage(msg);
       } else {
         console.warn("Toast system not loaded yet:", msg);
       }

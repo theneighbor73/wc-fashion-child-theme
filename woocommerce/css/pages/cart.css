@@ -1,15 +1,34 @@
-.woocommerce-cart-form .cart-collaterals {
+.cart-collaterals {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 1.5rem;
 }
 
-.woocommerce-cart-form .cart_totals {
-  width: 100%;
-  max-width: 430px;
+.woocommerce .coupon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.woocommerce .coupon .input-text {
+  height: stretch;
+}
+
+.woocommerce button.button[value="Update cart"],
+.woocommerce button.button[value="Update cart"]:disabled,
+.woocommerce button.button[value="Update cart"]:disabled[disabled] {
+  border: none;
+  padding: 0.95rem 1.6rem;
+  font-weight: 700;
+  box-shadow: 0 12px 20px rgba(93, 214, 156, 0.16);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.25rem 0 !important;
 }
 
 .woocommerce .wc-proceed-to-checkout {
-  margin-top: 1rem;
+  width: 100%;
 }

@@ -16,12 +16,14 @@ if (class_exists('WP_Customize_Control') && ! class_exists('CPSC_Customize_Logo_
         {
             $input_attrs_html = '';
 
-            foreach ($this->input_attrs as $attr => $value) {
-                $input_attrs_html .= sprintf(
-                    ' %s="%s"',
-                    esc_attr($attr),
-                    esc_attr($value)
-                );
+            if (! empty($this->input_attrs)) {
+                foreach ($this->input_attrs as $attr => $value) {
+                    $input_attrs_html .= sprintf(
+                        ' %s="%s"',
+                        esc_attr($attr),
+                        esc_attr($value)
+                    );
+                }
             }
 ?>
             <?php if (! empty($this->label)) : ?>
@@ -141,12 +143,10 @@ function cpsc_logo_customize_register($wp_customize)
             'logo_resize',
             [
                 'label' => esc_html__('Logo Resize', 'custom-print-shop'),
-                'description' => esc_html__('-100% to +100%. Preview on the right only shows desktop view. For mobile view, please check on mobile. 
-                Max height allowed: ' . CPSC_DESKTOP_HEADER_LOGO_MAX_HEIGHT . 'px', 'custom-print-shop'),
+                'description' => esc_html__('-100% to +100%. Max height allowed: ' . CPSC_DESKTOP_HEADER_LOGO_MAX_HEIGHT . 'px', 'custom-print-shop'),
                 'section' => 'title_tagline',
                 'active_callback' => 'has_custom_logo',
                 'priority' => 10,
-                'type' => 'range',
                 'settings' => 'logo_resize',
                 'input_attrs' => [
                     'min' => -99, // because (100 - 100)/100 is not possible
