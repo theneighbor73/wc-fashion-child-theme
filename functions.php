@@ -40,7 +40,7 @@ $all_child_directories = array(
 	'/inc',
 	'/features/product-search-validation',
 	'/features/customizer/logo',
-	'/features/checkout',
+	'/woocommerce/hooks',
 );
 
 foreach ($all_child_directories as $load_directory) {

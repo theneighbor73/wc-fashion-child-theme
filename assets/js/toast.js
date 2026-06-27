@@ -1,6 +1,8 @@
 (function () {
   "use strict";
 
+  let outerToast;
+
   document.addEventListener("DOMContentLoaded", () => {
     outerToast = document.querySelector(".custom-toast-container");
   });
@@ -10,13 +12,13 @@
    */
   window.cpsc_showToastMessage = function (message) {
     if (typeof message !== "string" || !message.trim()) {
+      console.error("No message.");
       return;
     }
 
-    // Ensure the container exists just in case DOMContentLoaded hasn't finished
     if (!outerToast) {
-      outerToast = document.querySelector(".custom-toast-container");
-      if (!outerToast) return;
+      console.error("Toast container not found.");
+      return;
     }
 
     const innerToast = document.createElement("div");

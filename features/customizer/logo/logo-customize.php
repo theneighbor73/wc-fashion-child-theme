@@ -14,14 +14,16 @@ if (class_exists('WP_Customize_Control') && ! class_exists('CPSC_Customize_Logo_
 
         public function render_content()
         {
-            $input_attrs = '';
+            $input_attrs_html = '';
 
-            foreach ($this->input_attrs as $attr => $value) {
-                $input_attrs .= sprintf(
-                    ' %s="%s"',
-                    esc_attr($attr),
-                    esc_attr($value)
-                );
+            if (! empty($this->input_attrs)) {
+                foreach ($this->input_attrs as $attr => $value) {
+                    $input_attrs_html .= sprintf(
+                        ' %s="%s"',
+                        esc_attr($attr),
+                        esc_attr($value)
+                    );
+                }
             }
 ?>
             <?php if (! empty($this->label)) : ?>
@@ -41,7 +43,7 @@ if (class_exists('WP_Customize_Control') && ! class_exists('CPSC_Customize_Logo_
                 type="range"
                 value="<?php echo esc_attr($this->value()); ?>"
                 <?php echo $this->get_link(); ?>
-                <?php echo $input_attrs; ?>>
+                <?php echo $input_attrs_html; ?>>
 
             <div class="custom-logo-resize-footer">
                 <div class="logo-resize-markers">
@@ -141,12 +143,10 @@ function cpsc_logo_customize_register($wp_customize)
             'logo_resize',
             [
                 'label' => esc_html__('Logo Resize', 'custom-print-shop'),
-                'description' => esc_html__('-100% to +100%. Preview on the right only shows desktop view. For mobile view, please check on mobile. 
-                Max height allowed: ' . CPSC_DESKTOP_HEADER_LOGO_MAX_HEIGHT . 'px', 'custom-print-shop'),
+                'description' => esc_html__('-100% to +100%. Max height allowed: ' . CPSC_DESKTOP_HEADER_LOGO_MAX_HEIGHT . 'px', 'custom-print-shop'),
                 'section' => 'title_tagline',
                 'active_callback' => 'has_custom_logo',
                 'priority' => 10,
-                'type' => 'range',
                 'settings' => 'logo_resize',
                 'input_attrs' => [
                     'min' => -99, // because (100 - 100)/100 is not possible
@@ -165,7 +165,6 @@ function cpsc_customize_logo_resize($html)
     }
 
     $scale = get_theme_mod('logo_resize', CPSC_DEFAULT_LOGO_RESIZE);
-    cpsc_debug_logger($scale, 'logo_resize');
 
     $custom_logo_id = get_theme_mod('custom_logo');
 
