@@ -7,3 +7,5 @@ debug.log
 screenshot.png
 draft.md
 notes.md
+docker-compose.yml
+.env
